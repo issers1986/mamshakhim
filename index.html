@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0042)file:///C:/Users/amit/Downloads/index.html -->
+<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/index_1.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -526,17 +526,13 @@ function renderProjects() {
       </div>` : "";
 
     const buttons = canEdit ? `
-      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
-        ${si>0?`<button onclick="revertStage(${proj.id})" style="background:#1E2440;color:#8899BB;border:1px solid #2A3050;border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer">← שלב קודם</button>`:""}
-        ${si<STAGES.length-1?`<button onclick="advanceStage(${proj.id})" style="background:linear-gradient(135deg,${stage.color},${STAGES[si+1].color});color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px ${stage.color}50">קדם: ${STAGES[si+1].label} ${STAGES[si+1].icon}</button>`:""}
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:8px">
+        <select onchange="forceSetStage(${proj.id},this.value);this.value=''" style="background:#1E2440;color:#E2E8F0;border:1px solid #2A3050;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-weight:500">
+          <option value="">🔄 שנה שלב...</option>
+          ${STAGES.map(s=>`<option value="${s.id}" ${s.id===proj.stage?"disabled":""}>${s.icon} ${s.label}</option>`).join("")}
+        </select>
         <div style="flex:1"></div>
-        ${isAdmin?`
-          <select onchange="forceSetStage(${proj.id},this.value);this.value=''" style="background:#1E2440;color:#8899BB;border:1px solid #2A3050;border-radius:8px;padding:7px 10px;font-size:11px;cursor:pointer">
-            <option value="">🔧 תקן שלב...</option>
-            ${STAGES.map(s=>`<option value="${s.id}" ${s.id===proj.stage?"disabled":""}>${s.icon} ${s.label}</option>`).join("")}
-          </select>
-          <button onclick="deleteProject(${proj.id})" style="background:transparent;color:#EF444455;border:1px solid #EF444425;border-radius:8px;padding:7px 13px;font-size:11px;cursor:pointer">🗑 מחק</button>
-        `:""}
+        ${isAdmin?`<button onclick="deleteProject(${proj.id})" style="background:transparent;color:#EF444455;border:1px solid #EF444425;border-radius:8px;padding:7px 13px;font-size:11px;cursor:pointer">🗑 מחק</button>`:""}
       </div>` : `<div style="font-size:11px;color:#4A5580;font-style:italic">🔒 צפייה בלבד</div>`;
 
     return `

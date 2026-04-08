@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/index_1.html -->
+<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/index_2.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -504,7 +504,7 @@ function renderProjects() {
     const [tc,tbg,tbr] = typeColor(proj.type||"API");
 
     const pipelineSteps = STAGES.map((s,i) => `
-      <div style="display:flex;flex-direction:column;align-items:center;width:52px">
+      <div onclick="switchNoteTab(${proj.id}, '${s.id}')" style="display:flex;flex-direction:column;align-items:center;width:52px;cursor:${i<=si?'pointer':'default'}">
         <div style="width:30px;height:30px;border-radius:50%;background:${i<=si?s.color:"#0a0d1a"};border:2px solid ${i<=si?s.color:"#2A3050"};display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:${i===si?"0 0 12px "+s.color+"70":"none"}">
           ${i<si?"✓":s.icon}
         </div>
@@ -526,9 +526,9 @@ function renderProjects() {
       </div>` : "";
 
     const buttons = canEdit ? `
-      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:8px">
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid #1E2440">
         <select onchange="forceSetStage(${proj.id},this.value);this.value=''" style="background:#1E2440;color:#E2E8F0;border:1px solid #2A3050;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;font-weight:500">
-          <option value="">🔄 שנה שלב...</option>
+          <option value="">✏️ שנה סטטוס...</option>
           ${STAGES.map(s=>`<option value="${s.id}" ${s.id===proj.stage?"disabled":""}>${s.icon} ${s.label}</option>`).join("")}
         </select>
         <div style="flex:1"></div>
@@ -576,27 +576,12 @@ function renderProjects() {
 }
 
 function buildNotesSection(proj, currentStageIdx, canEdit) {
-  const relevantStages = STAGES.slice(0, currentStageIdx + 1);
   const currentStage = STAGES[currentStageIdx];
-  const activeStageId = currentStage.id;
-  const allNotes = proj.stageNotes || {};
-  
-  const tabsHtml = relevantStages.map((s) => {
-    const count = (allNotes[s.id] || []).length;
-    const isActive = s.id === activeStageId;
-    return `<button onclick="switchNoteTab(${proj.id}, '${s.id}')" id="notetab-${proj.id}-${s.id}"
-      style="background:${isActive ? '#1E2440' : 'transparent'};border:none;border-bottom:2px solid ${isActive ? s.color : 'transparent'};padding:5px 10px;font-size:11px;color:${isActive ? '#E2E8F0' : '#4A5580'};cursor:pointer;display:inline-flex;align-items:center;gap:5px;border-radius:0">
-      ${s.label}
-      ${count > 0 ? `<span style="background:${s.color}44;color:${s.color};border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700">${count}</span>` : ''}
-    </button>`;
-  }).join('');
-
-  return `<div style="background:#111827;border:1px solid #1E2440;border-radius:8px;overflow:hidden">
-    <div style="border-bottom:1px solid #1E2440;padding:0 8px;display:flex;gap:0">${tabsHtml}</div>
-    <div style="padding:10px 12px" id="notecontent-${proj.id}">${buildNotesBlock(proj, activeStageId, canEdit)}</div>
+  return `<div>
+    <div style="font-size:10px;color:#6B7EAA;margin-bottom:6px">📝 הערות — ${currentStage.icon} ${currentStage.label} <span style="font-size:9px;color:#4A5580">(לחץ על שלב ב-timeline לצפייה)</span></div>
+    <div id="notecontent-${proj.id}">${buildNotesBlock(proj, currentStage.id, canEdit)}</div>
   </div>`;
 }
-
 function switchNoteTab(projId, stageId) {
   const proj = projects.find(p => p.id === projId);
   if(!proj) return;
@@ -799,6 +784,8 @@ async function revertStage(id) {
 
 async function forceSetStage(id, newStage) {
   if(!newStage) return;
+  const stageName = STAGES.find(s=>s.id===newStage)?.label;
+  if(!confirm(`לשנות שלב ל: ${stageName}?`)) return;
   const prevStage = projects.find(p=>p.id===id)?.stage;
   projects = projects.map(p=>p.id===id?{...p,stage:newStage}:p);
   expandedId = id;

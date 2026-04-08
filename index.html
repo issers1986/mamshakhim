@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0054)file:///C:/Users/amit/Downloads/mamshakhim_final4.html -->
+<!-- saved from url=(0054)file:///C:/Users/amit/Downloads/mamshakhim_final5.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -581,12 +581,14 @@ function renderProjects() {
 
 function buildNotesSection(proj, currentStageIdx, canEdit) {
   const relevantStages = STAGES.slice(0, currentStageIdx + 1);
-  const activeStage = STAGES[currentStageIdx];
+  const currentStage = STAGES[currentStageIdx];
+  const savedTab = activeNoteTabs[proj.id];
+  const activeStageId = (savedTab && relevantStages.find(s=>s.id===savedTab)) ? savedTab : currentStage.id;
   const allNotes = proj.stageNotes || {};
   
-  const tabsHtml = relevantStages.map((s, i) => {
+  const tabsHtml = relevantStages.map((s) => {
     const count = (allNotes[s.id] || []).length;
-    const isActive = i === currentStageIdx;
+    const isActive = s.id === activeStageId;
     return `<button onclick="switchNoteTab(${proj.id}, '${s.id}')" id="notetab-${proj.id}-${s.id}"
       style="background:${isActive ? '#1E2440' : 'transparent'};border:none;border-bottom:2px solid ${isActive ? s.color : 'transparent'};padding:5px 10px;font-size:11px;color:${isActive ? '#E2E8F0' : '#4A5580'};cursor:pointer;display:inline-flex;align-items:center;gap:5px;border-radius:0">
       ${s.label}
@@ -596,28 +598,29 @@ function buildNotesSection(proj, currentStageIdx, canEdit) {
 
   return `<div style="background:#111827;border:1px solid #1E2440;border-radius:8px;overflow:hidden">
     <div style="border-bottom:1px solid #1E2440;padding:0 8px;display:flex;gap:0">${tabsHtml}</div>
-    <div style="padding:10px 12px" id="notecontent-${proj.id}">${buildNotesBlock(proj, activeStage.id, canEdit)}</div>
+    <div style="padding:10px 12px" id="notecontent-${proj.id}">${buildNotesBlock(proj, activeStageId, canEdit)}</div>
   </div>`;
 }
+
+let activeNoteTabs = {};
 
 function switchNoteTab(projId, stageId) {
   const proj = projects.find(p => p.id === projId);
   if(!proj) return;
   const isAdmin = currentUser.role === 'admin';
   const canEdit = isAdmin || proj.owner_id === currentUser.id;
-  const stage = STAGES.find(s => s.id === stageId);
   
-  // Update tab styles
+  activeNoteTabs[projId] = stageId;
+
   STAGES.forEach(s => {
     const btn = document.getElementById(`notetab-${projId}-${s.id}`);
     if(!btn) return;
     const active = s.id === stageId;
     btn.style.background = active ? '#1E2440' : 'transparent';
-    btn.style.borderBottom = `2px solid ${active ? s.color : 'transparent'}`;
+    btn.style.borderBottom = `2px solid ${active ? STAGES.find(x=>x.id===s.id).color : 'transparent'}`;
     btn.style.color = active ? '#E2E8F0' : '#4A5580';
   });
   
-  // Update content
   const content = document.getElementById(`notecontent-${projId}`);
   if(content) content.innerHTML = buildNotesBlock(proj, stageId, canEdit);
 }
@@ -695,7 +698,11 @@ async function saveNotes(projId, allNotes) {
   }
 }
 
-function toggleExpand(id) { expandedId = expandedId===id?null:id; renderProjects(); }
+function toggleExpand(id) { 
+  if(expandedId === id) delete activeNoteTabs[id];
+  expandedId = expandedId===id?null:id; 
+  renderProjects(); 
+}
 function showForm() { document.getElementById("new-project-form").classList.remove("hidden"); }
 function hideForm() { document.getElementById("new-project-form").classList.add("hidden"); }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/index_8.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_10.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -161,7 +161,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const USERS = [
   {id:"amit",  name:"עמית איסרס",  role:"admin",   title:"מנהל",   avatar:"עא",color:"#3B82F6"},
-  {id:"mirav", name:"מירב הזז",     role:"admin",   title:"מנהלת",  avatar:"מה",color:"#8B5CF6"},
+  {id:"merav", name:"מרב הזז",     role:"admin",   title:"מנהלת",  avatar:"מה",color:"#8B5CF6"},
   {id:"shir",  name:"שיר ינאי",    role:"support", title:"תומכת",  avatar:"שי",color:"#10B981"},
   {id:"elad",  name:"אלעד יקותיאל",role:"support", title:"תומך",   avatar:"אי",color:"#F59E0B"},
   {id:"michal",name:"מיכל רפאלי",  role:"support", title:"תומכת",  avatar:"מר",color:"#EC4899"},
@@ -568,6 +568,14 @@ function renderProjects() {
             <span style="font-size:11px;color:#EF4444;font-weight:700">הזמנת עבודה:</span>
             <span style="font-size:13px;color:#E2E8F0">${proj.workorder}</span>
           </div>`:""}
+          <div style="margin-bottom:11px;border-top:1px solid #1E2440;padding-top:11px">
+            <div style="font-size:10px;color:#6B7EAA;margin-bottom:7px">📋 טופס איפיון</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button onclick="sendFormToClient(${proj.id},'${proj.contact||''}')" style="background:linear-gradient(135deg,#0057A8,#1a6ec2);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer">📨 שלח טופס ללקוח</button>
+              ${`<span id="form-status-${proj.id}"></span>`}
+            </div>
+            <div id="form-data-${proj.id}" style="margin-top:10px"></div>
+          </div>
           ${ownerSelect}
           ${buttons}
         </div>`:""}
@@ -840,6 +848,82 @@ async function deleteProject(id) {
   projects = projects.filter(p=>p.id!==id);
   renderProjects(); buildStagePills();
   await apiCall("DELETE",`projects?id=eq.${id}`);
+}
+
+// ===== FORM SUBMISSION =====
+const FORM_URL = "https://issers1986.github.io/mamshakhim/form-mmshak-atar.html";
+
+function sendFormToClient(projId, contactEmail) {
+  const proj = projects.find(p => p.id === projId);
+  if (!proj) return;
+  const formLink = FORM_URL + "?project_id=" + projId;
+  const subject = encodeURIComponent("טופס איפיון הקמת ממשק אתר — " + (proj.org || proj.name || ''));
+  const body = encodeURIComponent(
+    "שלום,
+
+אנא מלא/י את טופס האיפיון לפרויקט "" + (proj.name || '') + "":
+
+" +
+    formLink + "
+
+בברכה,
+מחלקת ממשקים — קומקס"
+  );
+  const email = contactEmail || "";
+  window.open("mailto:" + email + "?subject=" + subject + "&body=" + body);
+
+  // Load form data after click
+  loadFormData(projId);
+}
+
+async function loadFormData(projId) {
+  const statusEl = document.getElementById("form-status-" + projId);
+  const dataEl = document.getElementById("form-data-" + projId);
+  if (!dataEl) return;
+
+  const res = await fetch(SUPABASE_URL + "/rest/v1/form_submissions?project_id=eq." + projId + "&order=submitted_at.desc&limit=1", {
+    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+  });
+  const data = await res.json();
+
+  if (!Array.isArray(data) || data.length === 0) {
+    if (statusEl) statusEl.innerHTML = '<span style="font-size:11px;color:#4A5580">טרם התקבל טופס</span>';
+    return;
+  }
+
+  const f = data[0];
+  const dt = new Date(f.submitted_at);
+  const dateStr = new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }).format(dt);
+
+  if (statusEl) statusEl.innerHTML = '<span style="font-size:11px;color:#10B981;font-weight:700">✅ התקבל ' + dateStr + '</span>';
+
+  const fields = [
+    ['שם ארגון', f.org_name], ['שם חברה', f.company_name], ['ממשק פעיל', f.has_active],
+    ['איש קשר 1', f.contact1_name], ['נייד', f.contact1_phone], ['מייל', f.contact1_email], ['תפקיד', f.contact1_role],
+    ['איש קשר 2', f.contact2_name], ['נייד 2', f.contact2_phone], ['מייל 2', f.contact2_email],
+    ['מתכנת', f.dev_name], ['חברת פיתוח', f.dev_company], ['מייל מתכנת', f.dev_email], ['נייד מתכנת', f.dev_phone],
+    ['הסכם חתום', f.agreement_signed], ['הזמנת עבודה', f.work_order],
+    ['סליקה בקומקס', f.slika], ['פריטים שקילים', f.weighted_items], ['ניהול פיקדון', f.deposit],
+    ['מסמך חשבונאי', f.doc_type], ['סגירת הזמנה', f.order_close],
+    ['סניף רישום מסמך', f.branch_doc], ['סניף ירידת מלאי', f.branch_stock],
+    ['תוכנית לילה', f.night_plan], ['סוג לקוח', f.customer_type],
+    ['תגמולים', f.rewards], ['מחירון', f.price_list], ['דגשים', f.notes]
+  ].filter(([, v]) => v);
+
+  dataEl.innerHTML = '<div style="background:#0a0d1a;border:1px solid #1E2440;border-radius:8px;padding:12px;margin-top:6px">' +
+    '<div style="font-size:11px;font-weight:700;color:#A5B4FC;margin-bottom:8px">פרטי האיפיון שהתקבלו:</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px">' +
+    fields.map(([k, v]) =>
+      '<div style="font-size:11px"><span style="color:#6B7EAA">' + k + ': </span><span style="color:#E2E8F0">' + v + '</span></div>'
+    ).join('') +
+    '</div></div>';
+}
+
+// Load form data for expanded project
+const _origToggle = toggleExpand;
+function toggleExpand(id) {
+  _origToggle(id);
+  if (expandedId === id) setTimeout(() => loadFormData(id), 100);
 }
 
 // Init — load passwords first then build login

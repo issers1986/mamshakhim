@@ -566,25 +566,83 @@
     }
   }
 
-  function handleSubmit(e) {
+  const SUPABASE_URL = "https://gxhwzhxuydjlfdhpzwap.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4aHd6aHh1eWRqbGZkaHB6d2FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1ODM1NDcsImV4cCI6MjA5MTE1OTU0N30.Rnasvuv8463sE8GVnon_iQK5FI3cwoKaaL7gN1RSqow";
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const projectId = urlParams.get('project_id');
+
+  async function handleSubmit(e) {
     e.preventDefault();
     const form = document.getElementById('main-form');
+    const btn = form.querySelector('.btn-submit');
+    btn.textContent = 'שולח...';
+    btn.disabled = true;
+
     const data = new FormData(form);
+    const docTypes = [...form.querySelectorAll('input[name="doc_type"]:checked')].map(i => i.value).join(', ');
+    const customerTypes = [...form.querySelectorAll('input[name="customer_type"]:checked')].map(i => i.value).join(', ');
 
-    // Build email body
-    let body = "איפיון הקמת ממשק אתר — פרטים שהתקבלו:\n\n";
-    data.forEach((val, key) => {
-      body += key + ": " + val + "\n";
-    });
+    const row = {
+      project_id: projectId ? parseInt(projectId) : null,
+      org_name: data.get('org_name') || '',
+      company_name: data.get('company_name') || '',
+      has_active: data.get('has_active') || '',
+      contact1_name: data.get('contact1_name') || '',
+      contact1_phone: data.get('contact1_phone') || '',
+      contact1_email: data.get('contact1_email') || '',
+      contact1_role: data.get('contact1_role') || '',
+      contact2_name: data.get('contact2_name') || '',
+      contact2_phone: data.get('contact2_phone') || '',
+      contact2_email: data.get('contact2_email') || '',
+      contact2_role: data.get('contact2_role') || '',
+      dev_site: data.get('dev_site') || '',
+      dev_company: data.get('dev_company') || '',
+      dev_name: data.get('dev_name') || '',
+      dev_phone: data.get('dev_phone') || '',
+      dev_email: data.get('dev_email') || '',
+      agreement_signed: data.get('agreement_signed') || '',
+      work_order: data.get('work_order') || '',
+      slika: data.get('slika') || '',
+      weighted_items: data.get('weighted_items') || '',
+      deposit: data.get('deposit') || '',
+      doc_type: docTypes,
+      order_close: data.get('order_close') || '',
+      branch_doc: data.get('branch_doc') || '',
+      branch_stock: data.get('branch_stock') || '',
+      night_plan: data.get('night_plan') || '',
+      customer_type: customerTypes,
+      rewards: data.get('rewards') || '',
+      price_list: data.get('price_list') || '',
+      notes: data.get('notes') || ''
+    };
 
-    // Send via mailto
-    const subject = encodeURIComponent("איפיון הקמת ממשק אתר — " + (data.get('org_name') || data.get('company_name') || ''));
-    const bodyEnc = encodeURIComponent(body);
-    window.location.href = `mailto:amit@comax.co.il?subject=${subject}&body=${bodyEnc}`;
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/form_submissions', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(row)
+      });
 
-    // Show success
-    form.style.display = 'none';
-    document.getElementById('success-msg').style.display = 'block';
+      if (res.ok) {
+        form.style.display = 'none';
+        document.getElementById('success-msg').style.display = 'block';
+      } else {
+        const err = await res.text();
+        alert('שגיאה בשמירה: ' + err);
+        btn.textContent = 'שלח טופס ✓';
+        btn.disabled = false;
+      }
+    } catch(err) {
+      alert('שגיאת חיבור — נסה שוב');
+      btn.textContent = 'שלח טופס ✓';
+      btn.disabled = false;
+    }
   }
 </script>
 </body>

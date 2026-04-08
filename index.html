@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0056)file:///C:/Users/amit/Downloads/mamshakhim_final3_1.html -->
+<!-- saved from url=(0054)file:///C:/Users/amit/Downloads/mamshakhim_final4.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -580,26 +580,23 @@ function renderProjects() {
 }
 
 function buildNotesSection(proj, currentStageIdx, canEdit) {
-  // Show tabs for all stages up to and including the current one
   const relevantStages = STAGES.slice(0, currentStageIdx + 1);
   const activeStage = STAGES[currentStageIdx];
   const allNotes = proj.stageNotes || {};
   
-  // Count notes per stage for tab badges
   const tabsHtml = relevantStages.map((s, i) => {
     const count = (allNotes[s.id] || []).length;
     const isActive = i === currentStageIdx;
     return `<button onclick="switchNoteTab(${proj.id}, '${s.id}')" id="notetab-${proj.id}-${s.id}"
-      style="background:${isActive ? s.color+'22' : '#111827'};border:1px solid ${isActive ? s.color : '#2A3050'};border-radius:20px;padding:4px 12px;font-size:11px;color:${isActive ? s.color : '#6B7EAA'};cursor:pointer;display:inline-flex;align-items:center;gap:5px">
-      ${s.icon} ${s.label}
-      ${count > 0 ? `<span style="background:${s.color}33;color:${s.color};border-radius:10px;padding:0 5px;font-size:10px;font-weight:700">${count}</span>` : ''}
+      style="background:${isActive ? '#1E2440' : 'transparent'};border:none;border-bottom:2px solid ${isActive ? s.color : 'transparent'};padding:5px 10px;font-size:11px;color:${isActive ? '#E2E8F0' : '#4A5580'};cursor:pointer;display:inline-flex;align-items:center;gap:5px;border-radius:0">
+      ${s.label}
+      ${count > 0 ? `<span style="background:${s.color}44;color:${s.color};border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700">${count}</span>` : ''}
     </button>`;
   }).join('');
 
-  return `<div>
-    <div style="font-size:10px;color:#6B7EAA;margin-bottom:7px">📝 הערות לפי שלב</div>
-    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">${tabsHtml}</div>
-    <div id="notecontent-${proj.id}">${buildNotesBlock(proj, activeStage.id, canEdit)}</div>
+  return `<div style="background:#111827;border:1px solid #1E2440;border-radius:8px;overflow:hidden">
+    <div style="border-bottom:1px solid #1E2440;padding:0 8px;display:flex;gap:0">${tabsHtml}</div>
+    <div style="padding:10px 12px" id="notecontent-${proj.id}">${buildNotesBlock(proj, activeStage.id, canEdit)}</div>
   </div>`;
 }
 
@@ -615,9 +612,9 @@ function switchNoteTab(projId, stageId) {
     const btn = document.getElementById(`notetab-${projId}-${s.id}`);
     if(!btn) return;
     const active = s.id === stageId;
-    btn.style.background = active ? s.color+'22' : '#111827';
-    btn.style.borderColor = active ? s.color : '#2A3050';
-    btn.style.color = active ? s.color : '#6B7EAA';
+    btn.style.background = active ? '#1E2440' : 'transparent';
+    btn.style.borderBottom = `2px solid ${active ? s.color : 'transparent'}`;
+    btn.style.color = active ? '#E2E8F0' : '#4A5580';
   });
   
   // Update content

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_14.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_15.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -853,16 +853,33 @@ async function deleteProject(id) {
 
 // ===== FORM SUBMISSION =====
 const FORM_URL = "https://issers1986.github.io/mamshakhim/form-mmshak-atar.html";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwthxIpo1HlVIwHX2DNBlOyR5ZJoYaRA20dqbcUe2faRpi7zz5Mx13OseMYg3AVoDdw/exec";
 
-function sendFormToClient(projId) {
+async function sendFormToClient(projId) {
   const proj = projects.find(p => p.id === projId);
   if (!proj) return;
-  const formLink = FORM_URL + "?project_id=" + projId;
-  const projName = (proj.name || '');
-  const subject = encodeURIComponent("טופס איפיון הקמת ממשק אתר — " + (proj.org || projName));
-  const bodyText = "שלום," + "\n\n" + "אנא מלא/י את טופס האיפיון לפרויקט " + projName + ":\n\n" + formLink + "\n\nבברכה,\nמחלקת ממשקים — קומקס";
-  const body = encodeURIComponent(bodyText);
-  window.open("mailto:?subject=" + subject + "&body=" + body);
+
+  const toEmail = prompt("מייל הלקוח לשליחה:");
+  if (!toEmail) return;
+
+  const btn = document.querySelector('[onclick="sendFormToClient(' + projId + ')"]');
+  if (btn) { btn.textContent = "שולח..."; btn.disabled = true; }
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        projId: projId,
+        projName: proj.name || '',
+        toEmail: toEmail
+      })
+    });
+    showToast("✅ הטופס נשלח ל: " + toEmail, "#10B981");
+  } catch(e) {
+    showToast("❌ שגיאה בשליחה", "#EF4444");
+  }
+
+  if (btn) { btn.textContent = "📨 שלח טופס ללקוח"; btn.disabled = false; }
   loadFormData(projId);
 }
 

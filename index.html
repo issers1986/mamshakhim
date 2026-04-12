@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_23.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_24.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -504,7 +504,7 @@ function renderProjects() {
     const canEdit = isAdmin || proj.owner_id===currentUser.id;
     const [tc,tbg,tbr] = typeColor(proj.type||"API");
 
-    const pipelineSteps = [...STAGES].reverse().map((s,i) => { i = STAGES.length-1-i; return `
+    const stagesRTL = [...STAGES].reverse(); const pipelineSteps = stagesRTL.map((s,ri) => { const i = STAGES.length-1-ri; return `
       <div onclick="switchNoteTab(${proj.id}, '${s.id}')" style="display:flex;flex-direction:column;align-items:center;width:52px;cursor:${i<=si?'pointer':'default'}">
         <div style="width:30px;height:30px;border-radius:50%;background:${i<=si?s.color:"#0a0d1a"};border:2px solid ${i<=si?s.color:"#2A3050"};display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:${i===si?"0 0 12px "+s.color+"70":"none"}">
           ${i<si?"✓":s.icon}

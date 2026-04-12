@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_25.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_26.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +28,7 @@ button,input,select{font-family:inherit}
       <div>
         <div style="color:#E2E8F0;font-size:13px;font-weight:600">עמית איסרס</div>
         <div style="color:#3B82F6;font-size:10px">👑 מנהל 🔒</div>
-      </div></div><div id="user-card-merav" style="background: rgba(139, 92, 246, 0.133); border: 2px solid rgb(139, 92, 246); border-radius: 13px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
+      </div></div><div id="user-card-merav" style="background: rgb(17, 24, 39); border: 2px solid rgb(30, 36, 64); border-radius: 13px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
       <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#8B5CF6,#8B5CF688);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">מה</div>
       <div>
         <div style="color:#E2E8F0;font-size:13px;font-weight:600">מירב הזז</div>
@@ -58,7 +58,9 @@ button,input,select{font-family:inherit}
         <input id="password-input" type="password" placeholder="הכנס סיסמה..." onkeydown="if(event.key===&#39;Enter&#39;)doLogin()" style="width:100%;padding:12px 16px;border-radius:12px;border:1px solid #2A3050;background:#111827;color:#fff;font-size:15px;outline:none;text-align:right">
         <div id="password-error" style="color:#EF4444;font-size:12px;margin-top:6px;text-align:center;display:none"></div>
       </div>
-      <button onclick="doLogin()" id="login-btn" style="width: 100%; padding: 13px; border-radius: 12px; border: none; background: linear-gradient(135deg, rgb(59, 130, 246), rgb(139, 92, 246)); color: rgb(255, 255, 255); font-size: 15px; font-weight: 700; cursor: pointer;">התחבר/י כמירב הזז</button>
+      <button onclick="doLogin()" id="login-btn" style="width:100%;padding:13px;border-radius:12px;border:none;background:#1E2440;color:#4A5580;font-size:15px;font-weight:700;cursor:not-allowed">
+        בחר/י משתמש
+      </button>
     </div>
   </div>
 </div>
@@ -502,13 +504,13 @@ function renderProjects() {
     const canEdit = isAdmin || proj.owner_id===currentUser.id;
     const [tc,tbg,tbr] = typeColor(proj.type||"API");
 
-    const stagesRTL = [...STAGES].reverse(); const pipelineSteps = stagesRTL.map((s,ri) => { const i = STAGES.length-1-ri; return `
+    const pipelineSteps = STAGES.map((s,i) => `
       <div onclick="switchNoteTab(${proj.id}, '${s.id}')" style="display:flex;flex-direction:column;align-items:center;width:52px;cursor:${i<=si?'pointer':'default'}">
         <div style="width:30px;height:30px;border-radius:50%;background:${i<=si?s.color:"#0a0d1a"};border:2px solid ${i<=si?s.color:"#2A3050"};display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:${i===si?"0 0 12px "+s.color+"70":"none"}">
           ${i<si?"✓":s.icon}
         </div>
         <div style="font-size:8px;color:${i<=si?s.color:"#4A5580"};margin-top:4px;text-align:center">${s.label}</div>
-      </div>`; }).join("");
+      </div>`).join("");
 
     const ownerHtml = isAdmin && owner ? `
       <div style="display:flex;align-items:center;gap:5px">
@@ -549,7 +551,7 @@ function renderProjects() {
         <div style="border-top:1px solid #1E2440;padding:16px 18px;background:#0a0d1a">
           <div style="position:relative;margin-bottom:24px">
             <div style="position:absolute;top:15px;right:16px;left:16px;height:2px;background:#1E2440;border-radius:2px;z-index:0">
-              <div style="height:100%;border-radius:2px;background:linear-gradient(270deg,${stage.color},#3B82F6);width:${si===0?0:(si/(STAGES.length-1))*100}%;transition:width 0.4s ease;float:right"></div>
+              <div style="height:100%;border-radius:2px;background:linear-gradient(90deg,${stage.color},#3B82F6);width:${si===0?0:(si/(STAGES.length-1))*100}%;transition:width 0.4s ease;float:left"></div>
             </div>
             <div style="display:flex;flex-direction:row-reverse;justify-content:space-between;position:relative;z-index:1">${pipelineSteps}</div>
           </div>
@@ -910,7 +912,7 @@ async function loadFormData(projId) {
     ['סניף רישום מסמך', f.branch_doc], ['סניף ירידת מלאי', f.branch_stock],
     ['תוכנית לילה', f.night_plan], ['סוג לקוח', f.customer_type],
     ['תגמולים', f.rewards], ['מחירון', f.price_list], ['דגשים', f.notes]
-  ].filter(function(item){ return item[1]; });
+  ].filter(function(item){ return item[1] !== null && item[1] !== undefined && item[1] !== ''; });
 
   dataEl.innerHTML = '<div style="background:#0a0d1a;border:1px solid #1E2440;border-radius:8px;padding:12px;margin-top:6px">' +
     '<div style="font-size:11px;font-weight:700;color:#A5B4FC;margin-bottom:8px">פרטי האיפיון שהתקבלו:</div>' +

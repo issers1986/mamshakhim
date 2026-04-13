@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_49.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_50.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,7 +56,7 @@ button,input,select{font-family:inherit}
       <div>
         <div style="color:#E2E8F0;font-size:13px;font-weight:600">שיר ינאי</div>
         <div style="color:#6B7EAA;font-size:10px">תומכת</div>
-      </div></div><div id="user-card-elad" style="background: rgb(17, 24, 39); border: 2px solid rgb(30, 36, 64); border-radius: 13px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
+      </div></div><div id="user-card-elad" style="background: rgba(245, 158, 11, 0.133); border: 2px solid rgb(245, 158, 11); border-radius: 13px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
       <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#F59E0B,#F59E0B88);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">אי</div>
       <div>
         <div style="color:#E2E8F0;font-size:13px;font-weight:600">אלעד יקותיאל</div>
@@ -76,9 +76,7 @@ button,input,select{font-family:inherit}
         <input id="password-input" type="password" placeholder="הכנס סיסמה..." onkeydown="if(event.key===&#39;Enter&#39;)doLogin()" style="width:100%;padding:12px 16px;border-radius:12px;border:1px solid #2A3050;background:#111827;color:#fff;font-size:15px;outline:none;text-align:right">
         <div id="password-error" style="color:#EF4444;font-size:12px;margin-top:6px;text-align:center;display:none"></div>
       </div>
-      <button onclick="doLogin()" id="login-btn" style="width:100%;padding:13px;border-radius:12px;border:none;background:#1E2440;color:#4A5580;font-size:15px;font-weight:700;cursor:not-allowed">
-        בחר/י משתמש
-      </button>
+      <button onclick="doLogin()" id="login-btn" style="width: 100%; padding: 13px; border-radius: 12px; border: none; background: linear-gradient(135deg, rgb(59, 130, 246), rgb(139, 92, 246)); color: rgb(255, 255, 255); font-size: 15px; font-weight: 700; cursor: pointer;">התחבר/י כאלעד יקותיאל</button>
     </div>
   </div>
 </div>
@@ -103,7 +101,7 @@ button,input,select{font-family:inherit}
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:9px">
       <div>
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">שם פרויקט *</div>
-        <input id="proj-name" placeholder="שם הפרויקט..." onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();var v=this.value.trim();if(v)document.getElementById(&#39;proj-org&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+        <input id="proj-name" placeholder="שם הפרויקט..." onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();document.getElementById(&#39;proj-org&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
       </div>
       <div>
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">סוג</div>
@@ -130,11 +128,11 @@ button,input,select{font-family:inherit}
       </div>
       <div>
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">איש קשר</div>
-        <input id="proj-contact" placeholder="שם איש קשר..." onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();var v=this.value.trim();if(v)document.getElementById(&#39;proj-phone&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+        <input id="proj-contact" placeholder="שם איש קשר..." onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();document.getElementById(&#39;proj-phone&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
       </div>
       <div>
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">טלפון</div>
-        <input id="proj-phone" placeholder="מספר טלפון..." onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();var v=this.value.trim();if(v)document.getElementById(&#39;proj-workorder&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+        <input id="proj-phone" placeholder="מספר טלפון..." onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();document.getElementById(&#39;proj-workorder&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
       </div>
     </div>
     <div style="margin-bottom:11px">

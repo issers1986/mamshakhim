@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_36.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_37.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -696,48 +696,44 @@ function hideForm() { document.getElementById("new-project-form").classList.add(
 
 // ── Org Autocomplete ────────────────────────────────────────────────────────
 function getOrgList() {
-  const orgs = [...new Set(
-    projects.map(p => (p.org||"").trim()).filter(o => o.length > 0)
-  )].sort((a,b) => a.localeCompare(b, 'he'));
-  return orgs;
+  return [...new Set(projects.map(p=>(p.org||"").trim()).filter(o=>o.length>0))].sort((a,b)=>a.localeCompare(b,'he'));
 }
 function orgAutoInput(val) {
-  const dd = document.getElementById('org-dropdown');
-  const orgs = getOrgList();
-  const query = val.trim().toLowerCase();
-  const filtered = query ? orgs.filter(o => o.toLowerCase().includes(query)) : orgs;
+  var dd = document.getElementById('org-dropdown');
+  var orgs = getOrgList();
+  var q = val.trim().toLowerCase();
+  var filtered = q ? orgs.filter(function(o){ return o.toLowerCase().indexOf(q) !== -1; }) : orgs;
   orgRenderDropdown(dd, filtered, val);
 }
 function orgToggleDropdown() {
-  const dd = document.getElementById('org-dropdown');
+  var dd = document.getElementById('org-dropdown');
   if (dd.style.display === 'block') { dd.style.display = 'none'; return; }
-  const val = document.getElementById('proj-org').value;
-  orgRenderDropdown(dd, getOrgList(), val);
+  orgRenderDropdown(dd, getOrgList(), document.getElementById('proj-org').value);
 }
 function orgRenderDropdown(dd, items, currentVal) {
-  if (items.length === 0) { dd.style.display = "none"; window._orgItems = []; return; }
+  if (items.length === 0) { dd.style.display = 'none'; window._orgItems = []; return; }
   window._orgItems = items;
   window._orgHighlight = -1;
-  var html = "";
+  var html = '';
   for (var i = 0; i < items.length; i++) {
     var o = items[i];
     var isActive = (o === currentVal);
-    var bg = isActive ? "#1a2a4a" : "transparent";
-    var col = isActive ? "#3B82F6" : "#E2E8F0";
-    html += '<div onmousedown="orgSelect(this)" data-val="' + o.replace(/"/g,"&quot;") + '" data-idx="' + i + '"'
-      + ' style="padding:9px 14px;font-size:13px;cursor:pointer;'
-      + 'color:' + col + ';background:' + bg + ';border-bottom:1px solid #1E2440"'
-      + ' onmouseover="this.style.background='#1E2440'"'
-      + ' onmouseout="this.style.background='' + bg + ''">&#127962; ' + o + '</div>';
+    html += '<div onmousedown="orgSelect(this)" data-val="' + o.replace(/&/g,'&amp;').replace(/"/g,'&quot;') + '" data-idx="' + i + '"'
+      + ' style="padding:9px 14px;font-size:13px;cursor:pointer;border-bottom:1px solid #1E2440;'
+      + 'color:' + (isActive ? '#3B82F6' : '#E2E8F0') + ';'
+      + 'background:' + (isActive ? '#1a2a4a' : 'transparent') + '"'
+      + ' onmouseover="this.style.background=\'#1E2440\'"'
+      + ' onmouseout="this.style.background=\'' + (isActive ? '#1a2a4a' : 'transparent') + '\'">'
+      + '&#127962; ' + o + '</div>';
   }
   dd.innerHTML = html;
-  dd.style.display = "block";
+  dd.style.display = 'block';
 }
 function orgSelect(el) {
   var val = el.getAttribute('data-val');
   var input = document.getElementById('proj-org');
   input.value = val;
-  input.style.borderColor = "#10B981";
+  input.style.borderColor = '#10B981';
   document.getElementById('org-dropdown').style.display = 'none';
   document.getElementById('org-error').style.display = 'none';
   window._orgHighlight = -1;
@@ -745,17 +741,25 @@ function orgSelect(el) {
 function orgKeyDown(e) {
   var dd = document.getElementById('org-dropdown');
   var items = window._orgItems || [];
-  if (dd.style.display !== 'block' || items.length === 0) return;
-  var idx = (window._orgHighlight !== undefined) ? window._orgHighlight : -1;
+  // Open dropdown if not open
+  if (dd.style.display !== 'block') {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      orgAutoInput(document.getElementById('proj-org').value);
+      return;
+    }
+    return;
+  }
+  var idx = (typeof window._orgHighlight === 'number') ? window._orgHighlight : -1;
   if (e.key === 'ArrowDown') {
     e.preventDefault();
     idx = (idx + 1) % items.length;
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
     idx = (idx - 1 + items.length) % items.length;
-  } else if (e.key === 'Enter' || e.key === 'Tab') {
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
     if (idx >= 0 && idx < items.length) {
-      e.preventDefault();
       var el = dd.querySelector('[data-idx="' + idx + '"]');
       if (el) orgSelect(el);
     }
@@ -768,13 +772,14 @@ function orgKeyDown(e) {
     return;
   }
   window._orgHighlight = idx;
+  // Update input text to match highlighted item
+  document.getElementById('proj-org').value = items[idx];
   // Update highlight visually
   var allItems = dd.querySelectorAll('[data-idx]');
   for (var i = 0; i < allItems.length; i++) {
     allItems[i].style.background = (i === idx) ? '#2A3A60' : 'transparent';
     allItems[i].style.color = (i === idx) ? '#fff' : '#E2E8F0';
   }
-  // Scroll highlighted item into view
   var highlighted = dd.querySelector('[data-idx="' + idx + '"]');
   if (highlighted) highlighted.scrollIntoView({ block: 'nearest' });
 }
@@ -782,12 +787,12 @@ function orgValidate() {
   var val = document.getElementById('proj-org').value.trim();
   var input = document.getElementById('proj-org');
   var orgErr = document.getElementById('org-error');
-  if (getOrgList().includes(val)) {
-    input.style.borderColor = "#10B981";
+  if (getOrgList().indexOf(val) !== -1) {
+    input.style.borderColor = '#10B981';
     orgErr.style.display = 'none';
     return true;
   }
-  input.style.borderColor = "#EF4444";
+  input.style.borderColor = '#EF4444';
   orgErr.style.display = 'block';
   return false;
 }

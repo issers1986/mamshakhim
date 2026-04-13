@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_57.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_58.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -530,11 +530,11 @@ function renderProjects() {
     const [tc,tbg,tbr] = typeColor(proj.type||"API");
 
     const pipelineSteps = STAGES.map((s,i) => `
-      <div onclick="switchNoteTab(${proj.id}, '${s.id}')" style="display:flex;flex-direction:column;align-items:center;width:52px;cursor:${i<=si?'pointer':'default'}">
-        <div style="width:${i===si?'38px':'30px'};height:${i===si?'38px':'30px'};border-radius:50%;background:${i<=si?s.color:"#0a0d1a"};border:${i===si?'3px':'2px'} solid ${i<=si?s.color:"#2A3050"};display:flex;align-items:center;justify-content:center;font-size:${i===si?'16px':'12px'};box-shadow:${i===si?"0 0 18px "+s.color+", 0 0 6px "+s.color:"none"};transition:all 0.2s">
+      <div id="pipeline-step-${proj.id}-${s.id}" onclick="switchNoteTab(${proj.id}, '${s.id}')" style="display:flex;flex-direction:column;align-items:center;width:52px;cursor:${i<=si?'pointer':'default'}">
+        <div class="step-circle" style="width:${i===si?'38px':'30px'};height:${i===si?'38px':'30px'};border-radius:50%;background:${i<=si?s.color:"#0a0d1a"};border:${i===si?'3px':'2px'} solid ${i<=si?s.color:"#2A3050"};display:flex;align-items:center;justify-content:center;font-size:${i===si?'16px':'12px'};box-shadow:${i===si?"0 0 18px "+s.color+", 0 0 6px "+s.color:"none"};transition:all 0.2s">
           ${i<si?"✓":s.icon}
         </div>
-        <div style="font-size:${i===si?'9px':'8px'};color:${i<=si?s.color:"#4A5580"};margin-top:4px;text-align:center;font-weight:${i===si?'700':'400'}">${s.label}</div>
+        <div class="step-label" style="font-size:${i===si?'9px':'8px'};color:${i<=si?s.color:"#4A5580"};margin-top:4px;text-align:center;font-weight:${i===si?'700':'400'}">${s.label}</div>
       </div>`).join("");
 
     const ownerHtml = isAdmin && owner ? `
@@ -621,8 +621,35 @@ function switchNoteTab(projId, stageId) {
   if(!proj) return;
   const isAdmin = currentUser.role === 'admin';
   const canEdit = isAdmin || proj.owner_id === currentUser.id;
-  
+  const si = sIdx(proj.stage);
 
+  // Highlight selected pipeline step
+  STAGES.forEach((s, i) => {
+    const step = document.getElementById(`pipeline-step-${projId}-${s.id}`);
+    if (!step) return;
+    const isSelected = s.id === stageId;
+    const isCurrent = s.id === proj.stage;
+    const isPast = i < si;
+    const circle = step.querySelector('.step-circle');
+    if (circle) {
+      circle.style.width = isSelected ? '42px' : (isCurrent ? '38px' : '30px');
+      circle.style.height = isSelected ? '42px' : (isCurrent ? '38px' : '30px');
+      circle.style.fontSize = isSelected ? '18px' : (isCurrent ? '16px' : '12px');
+      circle.style.outline = isSelected ? `3px solid ${s.color}` : 'none';
+      circle.style.outlineOffset = isSelected ? '3px' : '0';
+      circle.style.boxShadow = isSelected
+        ? `0 0 24px ${s.color}, 0 0 8px ${s.color}`
+        : (isCurrent ? `0 0 18px ${s.color}, 0 0 6px ${s.color}` : 'none');
+    }
+    const label = step.querySelector('.step-label');
+    if (label) {
+      label.style.fontWeight = isSelected ? '900' : (isCurrent ? '700' : '400');
+      label.style.fontSize = isSelected ? '10px' : (isCurrent ? '9px' : '8px');
+      label.style.color = (i <= si) ? s.color : '#4A5580';
+    }
+  });
+
+  // Update note tabs
   STAGES.forEach(s => {
     const btn = document.getElementById(`notetab-${projId}-${s.id}`);
     if(!btn) return;
@@ -631,7 +658,7 @@ function switchNoteTab(projId, stageId) {
     btn.style.borderBottom = `2px solid ${active ? STAGES.find(x=>x.id===s.id).color : 'transparent'}`;
     btn.style.color = active ? '#E2E8F0' : '#4A5580';
   });
-  
+
   const content = document.getElementById(`notecontent-${projId}`);
   if(content) content.innerHTML = buildNotesBlock(proj, stageId, canEdit);
 }

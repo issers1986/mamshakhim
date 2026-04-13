@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_48.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_49.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,22 +17,21 @@ button,input,select{font-family:inherit}
 </head>
 <body>
 <script>
-// Force no-cache on GitHub Pages
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(regs){ regs.forEach(function(r){ r.unregister(); }); });
-}
-// Reload if cached version detected
-(function(){
-  var key = 'app_ver';
-  var ver =  + ver + ;
-  if (localStorage.getItem(key) && localStorage.getItem(key) !== ver) {
-    localStorage.setItem(key, ver);
-    location.reload(true);
-  } else {
-    localStorage.setItem(key, ver);
-  }
+(function() {
+  var CURRENT_VER = '20260413202149';
+  var RAW_URL = 'https://raw.githubusercontent.com/issers1986/mamshakhim/main/index.html?nocache=' + Date.now();
+  fetch(RAW_URL)
+    .then(function(r) { return r.text(); })
+    .then(function(html) {
+      var m = html.match(/<!-- v(\d+) -->/);
+      if (m && m[1] !== CURRENT_VER) {
+        location.reload(true);
+      }
+    })
+    .catch(function() {});
 })();
 </script>
+
 
 <div id="login-screen">
   <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 30% 20%,#1a1040 0%,#0a0d1a 60%,#000 100%)">

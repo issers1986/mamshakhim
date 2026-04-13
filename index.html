@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_33.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_34.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,7 +101,7 @@ button,input,select{font-family:inherit}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:11px">
       <div style="position:relative">
-        <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">שם הארגון</div>
+        <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px;display:flex;align-items:center;gap:4px">שם הארגון<span style="background:#EF444420;color:#EF4444;border:1px solid #EF444440;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700">חובה *</span></div>
         <div style="position:relative;display:flex;align-items:center">
           <input id="proj-org" placeholder="שם הארגון..." autocomplete="off" oninput="orgAutoInput(this.value)" onfocus="orgAutoInput(this.value)" onblur="setTimeout(()=&gt;document.getElementById(&#39;org-dropdown&#39;).style.display=&#39;none&#39;,200)" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 36px 8px 12px;color:#E2E8F0;font-size:13px;width:100%">
           <button type="button" onclick="orgToggleDropdown()" style="position:absolute;left:8px;background:transparent;border:none;color:#6B7EAA;cursor:pointer;font-size:12px;line-height:1;padding:2px 4px" title="הצג כל לקוחות">▼</button>
@@ -731,8 +731,25 @@ function orgRenderDropdown(dd, items, currentVal) {
   dd.style.display = "block";
 }
 function orgSelect(el) {
-  document.getElementById('proj-org').value = el.getAttribute('data-val');
+  var val = el.getAttribute('data-val');
+  var input = document.getElementById('proj-org');
+  input.value = val;
+  input.style.borderColor = "#10B981";
   document.getElementById('org-dropdown').style.display = 'none';
+  document.getElementById('org-error').style.display = 'none';
+}
+function orgValidate() {
+  var val = document.getElementById('proj-org').value.trim();
+  var input = document.getElementById('proj-org');
+  var orgErr = document.getElementById('org-error');
+  if (getOrgList().includes(val)) {
+    input.style.borderColor = "#10B981";
+    orgErr.style.display = 'none';
+    return true;
+  }
+  input.style.borderColor = "#EF4444";
+  orgErr.style.display = 'block';
+  return false;
 }
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -747,6 +764,15 @@ async function addProject() {
     return;
   }
   woErr.style.display="none";
+  const orgVal = document.getElementById("proj-org").value.trim();
+  const orgErr = document.getElementById("org-error");
+  if (!orgVal || !getOrgList().includes(orgVal)) {
+    orgErr.style.display = "block";
+    document.getElementById("proj-org").style.borderColor = "#EF4444";
+    return;
+  }
+  orgErr.style.display = "none";
+  document.getElementById("proj-org").style.borderColor = "#2A3050";
   const btn = document.getElementById("add-btn");
   btn.textContent = "שומר..."; btn.disabled = true;
   const row = {

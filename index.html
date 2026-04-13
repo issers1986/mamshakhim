@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_52.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_53.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1131,6 +1131,49 @@ function openFormView(projId) {
   modal.onclick = function(e) { if(e.target===modal) modal.remove(); };
   document.body.appendChild(modal);
 }
+
+// ── Field Navigation & Validation ──────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", function() {
+  // Intercept ALL keydown events on the form fields
+  var formFields = ['proj-name','proj-org','proj-contact','proj-phone','proj-workorder'];
+  
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Tab' && e.key !== 'Enter') return;
+    var focused = document.activeElement;
+    if (!focused) return;
+    var id = focused.id;
+    if (formFields.indexOf(id) === -1) return;
+    
+    // Special handling for org field
+    if (id === 'proj-org') {
+      var dd = document.getElementById('org-dropdown');
+      // If dropdown open and Enter pressed with highlighted item — let orgKeyDown handle it
+      if (e.key === 'Enter' && dd && dd.style.display === 'block' && window._orgHighlight >= 0) return;
+      // Otherwise block if org invalid
+      if (!orgValidate()) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('proj-contact').focus();
+        return;
+      }
+      return; // Tab — allow naturally
+    }
+    
+    // For other fields, Enter = Tab (move to next)
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var idx = formFields.indexOf(id);
+      if (idx < formFields.length - 1) {
+        document.getElementById(formFields[idx + 1]).focus();
+      }
+    }
+  }, true); // capture phase — fires before any other handler
+});
+// ────────────────────────────────────────────────────────────────────────────
 
 // Init — load passwords first then build login
 // Build login immediately so users always appear

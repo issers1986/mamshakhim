@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_67.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_68.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,27 +101,24 @@ button,input,select{font-family:inherit}
   </div>
   <div id="filter-panel" style="display:none;margin:8px 20px 0;background:#111827;border:1px solid #2A3050;border-radius:12px;padding:14px">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px">
-      <div>
+      <div style="position:relative">
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:5px">עובד</div>
-        <select id="filter-user" onchange="applyFilters()" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:6px 10px;color:#E2E8F0;font-size:12px;width:100%">
-          <option value="">כולם</option>
-        </select>
+        <input id="filter-user-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;user&#39;,this.value)" onkeydown="filterACKey(event,&#39;user&#39;)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;user&#39;),200)" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:6px 10px;color:#E2E8F0;font-size:12px;width:100%">
+        <div id="filter-user-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:#111827;border:1px solid #3B82F6;border-radius:6px;max-height:160px;overflow-y:auto;box-shadow:0 4px 16px #00000080"></div>
       </div>
-      <div>
+      <div style="position:relative">
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:5px">ארגון</div>
-        <select id="filter-org" onchange="applyFilters()" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:6px 10px;color:#E2E8F0;font-size:12px;width:100%">
-          <option value="">כולם</option>
-        </select>
+        <input id="filter-org-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;org&#39;,this.value)" onkeydown="filterACKey(event,&#39;org&#39;)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;org&#39;),200)" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:6px 10px;color:#E2E8F0;font-size:12px;width:100%">
+        <div id="filter-org-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:#111827;border:1px solid #3B82F6;border-radius:6px;max-height:160px;overflow-y:auto;box-shadow:0 4px 16px #00000080"></div>
       </div>
       <div>
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:5px">מספר הזמנה</div>
         <input id="filter-workorder" oninput="applyFilters()" placeholder="חפש..." style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:6px 10px;color:#E2E8F0;font-size:12px;width:100%">
       </div>
-      <div>
+      <div style="position:relative">
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:5px">סוג ממשק</div>
-        <select id="filter-type" onchange="applyFilters()" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:6px 10px;color:#E2E8F0;font-size:12px;width:100%">
-          <option value="">כולם</option>
-        </select>
+        <input id="filter-type-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;type&#39;,this.value)" onkeydown="filterACKey(event,&#39;type&#39;)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;type&#39;),200)" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:6px 10px;color:#E2E8F0;font-size:12px;width:100%">
+        <div id="filter-type-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:#111827;border:1px solid #3B82F6;border-radius:6px;max-height:160px;overflow-y:auto;box-shadow:0 4px 16px #00000080"></div>
       </div>
     </div>
     <div style="margin-top:10px;display:flex;gap:8px">
@@ -480,24 +477,34 @@ function buildStagePills() {
 
 function buildUserFilter() {}
 function buildSupportFilter() {}
+// Filter autocomplete data
+var _filterAC = {
+  user: { val: '', items: [] },
+  org:  { val: '', items: [] },
+  type: { val: '', items: [] }
+};
+
 function toggleFilterPanel() {
   var panel = document.getElementById('filter-panel');
   var btn = document.getElementById('filter-btn');
   if (panel.style.display === 'none') {
-    // Populate selects
-    var userSel = document.getElementById('filter-user');
-    var orgSel = document.getElementById('filter-org');
-    var typeSel = document.getElementById('filter-type');
-    if (currentUser && currentUser.role === 'admin') {
-      userSel.innerHTML = '<option value="">כולם</option>' + USERS.map(u=>'<option value="'+u.id+'"'+(filterUser===u.id?' selected':'')+'>'+u.name+'</option>').join('');
-    } else {
-      userSel.parentElement.style.display = 'none';
-    }
+    // Populate AC items
+    _filterAC.user.items = currentUser && currentUser.role==='admin'
+      ? [].concat([{id:'',name:'הכל'}], USERS.map(u=>({id:u.id,name:u.name})))
+      : [{id:'',name:'הכל'}];
     var orgs = [...new Set(projects.map(p=>(p.org||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'he'));
-    orgSel.innerHTML = '<option value="">כולם</option>' + orgs.map(o=>'<option value="'+o+'"'+(filterOrg===o?' selected':'')+'>'+o+'</option>').join('');
+    _filterAC.org.items = [''].concat(orgs);
     var types = [...new Set(projects.map(p=>p.type||'').filter(Boolean))].sort();
-    typeSel.innerHTML = '<option value="">כולם</option>' + types.map(t=>'<option value="'+t+'"'+(filterType===t?' selected':'')+'>'+t+'</option>').join('');
+    _filterAC.type.items = [''].concat(types);
+    // Restore current values
+    var uName = filterUser ? (USERS.find(u=>u.id===filterUser)||{name:''}).name : '';
+    document.getElementById('filter-user-input').value = uName;
+    document.getElementById('filter-org-input').value = filterOrg;
+    document.getElementById('filter-type-input').value = filterType;
     document.getElementById('filter-workorder').value = filterWorkorder;
+    if (currentUser && currentUser.role !== 'admin') {
+      document.getElementById('filter-user-input').parentElement.style.display = 'none';
+    }
     panel.style.display = 'block';
     btn.style.background = '#2A3A60';
     btn.style.color = '#fff';
@@ -507,20 +514,61 @@ function toggleFilterPanel() {
     btn.style.color = '#A5B4FC';
   }
 }
+
+function filterAC(type, val) {
+  var dd = document.getElementById('filter-'+type+'-dd');
+  var items = _filterAC[type].items || [];
+  var q = val.trim().toLowerCase();
+  var filtered;
+  if (type === 'user') {
+    filtered = q ? items.filter(function(u){ return (u.name||u).toLowerCase().includes(q); }) : items;
+  } else {
+    filtered = q ? items.filter(function(o){ return (o||'').toLowerCase().includes(q); }) : items;
+  }
+  dd.innerHTML = '';
+  if (filtered.length === 0) { dd.style.display = 'none'; return; }
+  filtered.forEach(function(item, i) {
+    var div = document.createElement('div');
+    var label = type === 'user' ? (item.name || 'הכל') : (item || 'הכל');
+    div.textContent = label;
+    div.style.cssText = 'padding:7px 10px;font-size:12px;cursor:pointer;color:#E2E8F0;border-bottom:1px solid #1E2440';
+    div.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      var inputEl = document.getElementById('filter-'+type+'-input');
+      inputEl.value = label === 'הכל' ? '' : label;
+      if (type === 'user') filterUser = item.id || '';
+      else if (type === 'org') filterOrg = item || '';
+      else if (type === 'type') filterType = item || '';
+      dd.style.display = 'none';
+      applyFilters();
+    });
+    div.addEventListener('mouseover', function(){ this.style.background='#1E2440'; });
+    div.addEventListener('mouseout', function(){ this.style.background='transparent'; });
+    dd.appendChild(div);
+  });
+  dd.style.display = 'block';
+}
+
+function filterACKey(e, type) {
+  if (e.key === 'Escape') closeFilterAC(type);
+}
+
+function closeFilterAC(type) {
+  var dd = document.getElementById('filter-'+type+'-dd');
+  if (dd) dd.style.display = 'none';
+}
+
 function applyFilters() {
-  filterUser = document.getElementById('filter-user').value;
-  filterOrg = document.getElementById('filter-org').value;
   filterWorkorder = document.getElementById('filter-workorder').value.trim();
-  filterType = document.getElementById('filter-type').value;
   updateFilterBadge();
   renderProjects(); buildStagePills();
 }
 function clearFilters() {
   filterUser = ''; filterOrg = ''; filterWorkorder = ''; filterType = '';
-  document.getElementById('filter-user').value = '';
-  document.getElementById('filter-org').value = '';
+  document.getElementById('filter-user-input').value = '';
+  document.getElementById('filter-org-input').value = '';
   document.getElementById('filter-workorder').value = '';
-  document.getElementById('filter-type').value = '';
+  document.getElementById('filter-type-input').value = '';
   updateFilterBadge();
   renderProjects(); buildStagePills();
 }

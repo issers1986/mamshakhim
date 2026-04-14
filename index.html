@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_60.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_61.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -595,12 +595,12 @@ function renderProjects() {
             <span style="font-size:13px;color:#E2E8F0">${proj.workorder}</span>
           </div>`:""}
           <div style="margin-bottom:11px;border-top:1px solid #1E2440;padding-top:11px">
-            <div style="font-size:10px;color:#6B7EAA;margin-bottom:7px">📋 טופס איפיון</div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-              <button onclick="sendFormToClient(${proj.id})" style="background:linear-gradient(135deg,#0057A8,#1a6ec2);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer">📨 שלח טופס ללקוח</button>
-              <span id="form-status-${proj.id}"></span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div style="font-size:10px;color:#6B7EAA">📋 פרטי איפיון</div>
+              ${canEdit ? `<button onclick="toggleAipiunForm(${proj.id})" id="aipiun-toggle-${proj.id}" style="background:#1E2440;color:#A5B4FC;border:1px solid #2A3050;border-radius:8px;padding:5px 12px;font-size:11px;cursor:pointer">✏️ עריכה</button>` : ""}
             </div>
-            <div id="form-data-${proj.id}" style="margin-top:10px"></div>
+            <div id="aipiun-view-${proj.id}"></div>
+            <div id="aipiun-form-${proj.id}" style="display:none"></div>
           </div>
           ${ownerSelect}
           ${buttons}
@@ -736,7 +736,7 @@ async function saveNotes(projId, allNotes) {
   }
 }
 
-function toggleExpand(id) { expandedId = expandedId===id?null:id; renderProjects(); if(expandedId===id) setTimeout(()=>loadFormData(id),100); }
+function toggleExpand(id) { expandedId = expandedId===id?null:id; renderProjects(); if(expandedId===id) { setTimeout(()=>loadAipiunData(id),100); } }
 function showForm() { document.getElementById("new-project-form").classList.remove("hidden"); }
 function hideForm() { document.getElementById("new-project-form").classList.add("hidden"); }
 
@@ -1169,6 +1169,161 @@ function openFormView(projId) {
   modal.onclick = function(e) { if(e.target===modal) modal.remove(); };
   document.body.appendChild(modal);
 }
+
+
+// ── Aipiun (פרטי איפיון) ────────────────────────────────────────────────────
+var AIPIUN_FIELDS = [
+  {key:'org_name',      label:'שם ארגון',         type:'text'},
+  {key:'company_name',  label:'שם חברה',           type:'text'},
+  {key:'has_active',    label:'ממשק פעיל',         type:'select', opts:['','כן','לא']},
+  {key:'contact1_name', label:'איש קשר 1',         type:'text'},
+  {key:'contact1_phone',label:'נייד 1',            type:'text'},
+  {key:'contact1_email',label:'מייל 1',            type:'text'},
+  {key:'contact1_role', label:'תפקיד 1',           type:'text'},
+  {key:'contact2_name', label:'איש קשר 2',         type:'text'},
+  {key:'contact2_phone',label:'נייד 2',            type:'text'},
+  {key:'contact2_email',label:'מייל 2',            type:'text'},
+  {key:'dev_name',      label:'מתכנת',             type:'text'},
+  {key:'dev_company',   label:'חברת פיתוח',        type:'text'},
+  {key:'dev_email',     label:'מייל מתכנת',        type:'text'},
+  {key:'dev_phone',     label:'נייד מתכנת',        type:'text'},
+  {key:'dev_site',      label:'אתר',               type:'text'},
+  {key:'agreement_signed',label:'הסכם חתום',       type:'select', opts:['','כן','לא']},
+  {key:'work_order',    label:'הזמנת עבודה',       type:'text'},
+  {key:'slika',         label:'סליקה בקומקס',      type:'select', opts:['','כן','לא']},
+  {key:'weighted_items',label:'פריטים שקילים',     type:'select', opts:['','כן','לא']},
+  {key:'deposit',       label:'ניהול פיקדון',      type:'select', opts:['','כן','לא']},
+  {key:'doc_type',      label:'מסמך חשבונאי',      type:'text'},
+  {key:'order_close',   label:'סגירת הזמנה',       type:'text'},
+  {key:'branch_doc',    label:'סניף רישום מסמך',   type:'text'},
+  {key:'branch_stock',  label:'סניף ירידת מלאי',   type:'text'},
+  {key:'night_plan',    label:'תוכנית לילה',       type:'select', opts:['','כן','לא']},
+  {key:'customer_type', label:'סוג לקוח',          type:'text'},
+  {key:'rewards',       label:'תגמולים',           type:'select', opts:['','כן','לא']},
+  {key:'price_list',    label:'מחירון',            type:'text'},
+  {key:'notes',         label:'דגשים',             type:'textarea'}
+];
+
+async function loadAipiunData(projId) {
+  var viewEl = document.getElementById('aipiun-view-' + projId);
+  if (!viewEl) return;
+  var res = await fetch(SUPABASE_URL + '/rest/v1/form_submissions?project_id=eq.' + projId + '&order=submitted_at.desc&limit=1', {
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}
+  });
+  var data = await res.json();
+  window._aipiunData = window._aipiunData || {};
+  var sub = (Array.isArray(data) && data.length > 0) ? data[0] : null;
+  window._aipiunData[projId] = sub;
+  renderAipiunView(projId, sub);
+}
+
+function renderAipiunView(projId, sub) {
+  var viewEl = document.getElementById('aipiun-view-' + projId);
+  if (!viewEl) return;
+  if (!sub) {
+    viewEl.innerHTML = '<div style="font-size:11px;color:#4A5580;font-style:italic">טרם הוזנו פרטי איפיון — לחץ עריכה להוספה</div>';
+    return;
+  }
+  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';
+  AIPIUN_FIELDS.forEach(function(f) {
+    if (!sub[f.key]) return;
+    html += '<div style="background:#0a0d1a;border:1px solid #1E2440;border-radius:6px;padding:6px 10px">' +
+      '<div style="font-size:9px;color:#6B7EAA;margin-bottom:2px">' + f.label + '</div>' +
+      '<div style="font-size:12px;color:#E2E8F0">' + sub[f.key] + '</div>' +
+      '</div>';
+  });
+  html += '</div>';
+  viewEl.innerHTML = html;
+}
+
+function toggleAipiunForm(projId) {
+  var formEl = document.getElementById('aipiun-form-' + projId);
+  var viewEl = document.getElementById('aipiun-view-' + projId);
+  var btn = document.getElementById('aipiun-toggle-' + projId);
+  if (formEl.style.display === 'block') {
+    formEl.style.display = 'none';
+    viewEl.style.display = 'block';
+    btn.textContent = '✏️ עריכה';
+  } else {
+    var sub = (window._aipiunData && window._aipiunData[projId]) || {};
+    formEl.innerHTML = buildAipiunForm(projId, sub);
+    formEl.style.display = 'block';
+    viewEl.style.display = 'none';
+    btn.textContent = '✕ סגור';
+  }
+}
+
+function buildAipiunForm(projId, sub) {
+  var sections = [
+    {title:'🏢 פרטי חברה', keys:['org_name','company_name','has_active']},
+    {title:'👤 איש קשר 1', keys:['contact1_name','contact1_phone','contact1_email','contact1_role']},
+    {title:'👤 איש קשר 2', keys:['contact2_name','contact2_phone','contact2_email']},
+    {title:'💻 מתכנת', keys:['dev_name','dev_company','dev_email','dev_phone','dev_site']},
+    {title:'📄 הסכמים', keys:['agreement_signed','work_order']},
+    {title:'⚙️ הגדרות', keys:['slika','weighted_items','deposit','doc_type','order_close','branch_doc','branch_stock','night_plan','customer_type','rewards','price_list']},
+    {title:'📝 דגשים', keys:['notes']}
+  ];
+  var html = '<div style="display:flex;flex-direction:column;gap:14px">';
+  sections.forEach(function(sec) {
+    html += '<div>';
+    html += '<div style="font-size:10px;color:#A5B4FC;font-weight:700;margin-bottom:7px;padding-bottom:4px;border-bottom:1px solid #1E2440">' + sec.title + '</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">';
+    sec.keys.forEach(function(key) {
+      var f = AIPIUN_FIELDS.find(function(x){ return x.key === key; });
+      if (!f) return;
+      var val = sub[key] || '';
+      var input = '';
+      if (f.type === 'textarea') {
+        input = '<textarea id="aipiun-' + projId + '-' + key + '" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:7px 10px;color:#E2E8F0;font-size:12px;width:100%;resize:vertical;min-height:60px;font-family:inherit">' + val + '</textarea>';
+        html += '<div style="grid-column:1/-1"><div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">' + f.label + '</div>' + input + '</div>';
+        return;
+      } else if (f.type === 'select') {
+        input = '<select id="aipiun-' + projId + '-' + key + '" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:7px 10px;color:#E2E8F0;font-size:12px;width:100%">';
+        f.opts.forEach(function(o){ input += '<option value="' + o + '"' + (val===o?' selected':'') + '>' + (o||'בחר...') + '</option>'; });
+        input += '</select>';
+      } else {
+        input = '<input id="aipiun-' + projId + '-' + key + '" value="' + val.replace(/"/g,'&quot;') + '" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:7px 10px;color:#E2E8F0;font-size:12px;width:100%">';
+      }
+      html += '<div><div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">' + f.label + '</div>' + input + '</div>';
+    });
+    html += '</div></div>';
+  });
+  html += '<div style="display:flex;gap:8px;margin-top:4px">';
+  html += '<button onclick="saveAipiun(' + projId + ')" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:700;cursor:pointer">💾 שמור</button>';
+  html += '</div>';
+  html += '</div>';
+  return html;
+}
+
+async function saveAipiun(projId) {
+  var sub = (window._aipiunData && window._aipiunData[projId]) || {};
+  var data = {project_id: projId};
+  AIPIUN_FIELDS.forEach(function(f) {
+    var el = document.getElementById('aipiun-' + projId + '-' + f.key);
+    if (el) data[f.key] = el.value;
+  });
+  data.submitted_at = new Date().toISOString();
+  var isNew = !sub.id;
+  var url = SUPABASE_URL + '/rest/v1/form_submissions' + (isNew ? '' : '?id=eq.' + sub.id);
+  var method = isNew ? 'POST' : 'PATCH';
+  var res = await fetch(url, {
+    method: method,
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+    body: JSON.stringify(data)
+  });
+  if (res.ok) {
+    showToast('✅ נשמר בהצלחה', '#10B981');
+    var saved = await res.json();
+    if (Array.isArray(saved)) saved = saved[0];
+    window._aipiunData = window._aipiunData || {};
+    window._aipiunData[projId] = saved || data;
+    toggleAipiunForm(projId);
+    renderAipiunView(projId, window._aipiunData[projId]);
+  } else {
+    showToast('❌ שגיאה בשמירה', '#EF4444');
+  }
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 // ── Field Navigation & Validation ──────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function() {

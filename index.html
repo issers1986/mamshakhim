@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_65.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_66.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -563,9 +563,9 @@ function renderProjects() {
         <div onclick="toggleExpand(${proj.id})" style="display:flex;align-items:center;gap:11px;padding:13px 16px;cursor:pointer">
           <div style="background:${stage.color}1A;border:1px solid ${stage.color}44;border-radius:20px;padding:4px 10px;font-size:11px;color:${stage.color};font-weight:700;white-space:nowrap">${stage.icon} ${stage.label}</div>
           <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:16px;flex-wrap:wrap">
-              ${proj.org?`<div><div style="font-size:9px;color:#4A5580;margin-bottom:1px">שם ארגון</div><div style="font-size:13px;font-weight:600;color:#E2E8F0">${proj.org}</div></div>`:""}
-              ${proj.workorder?`<div><div style="font-size:9px;color:#4A5580;margin-bottom:1px">מספר הזמנה</div><div style="font-size:13px;font-weight:600;color:#E2E8F0">${proj.workorder}</div></div>`:""}
+            <div style="display:flex;gap:20px;flex-wrap:wrap">
+              ${proj.org?`<div><div style="font-size:10px;color:#6B7EAA;margin-bottom:2px;font-weight:600">שם ארגון</div><div style="font-size:15px;font-weight:700;color:#fff">${proj.org}</div></div>`:""}
+              ${proj.workorder?`<div><div style="font-size:10px;color:#6B7EAA;margin-bottom:2px;font-weight:600">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:#fff">${proj.workorder}</div></div>`:""}
             </div>
           </div>
           <span style="background:${tbg};color:${tc};border:1px solid ${tbr};border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700">${proj.type||"API"}</span>

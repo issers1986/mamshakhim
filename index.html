@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_72.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_74.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,7 +45,7 @@ button,input,select{font-family:inherit}
       <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#3B82F6,#3B82F688);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">עא</div>
       <div>
         <div style="color:#E2E8F0;font-size:13px;font-weight:600">עמית איסרס</div>
-        <div style="color:#3B82F6;font-size:10px">👑 מנהל 🔒</div>
+        <div style="color:#3B82F6;font-size:10px">👑 מנהל</div>
       </div></div><div id="user-card-merav" style="background: rgb(17, 24, 39); border: 2px solid rgb(30, 36, 64); border-radius: 13px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
       <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#8B5CF6,#8B5CF688);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">מה</div>
       <div>
@@ -94,13 +94,21 @@ button,input,select{font-family:inherit}
     <button onclick="showForm()" style="background:linear-gradient(135deg,#3B82F6,#6366F1);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer">+ פרויקט חדש</button>
   </div>
 
-  <div id="stage-pills" style="display:flex;gap:8px;padding:14px 20px 0;flex-wrap:wrap"></div>
+  <div id="stage-pills" style="display:none"></div>
   <div style="padding:10px 20px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
     <div id="advanced-filter-bar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:1"></div>
     <button onclick="toggleFilterPanel()" id="filter-btn" style="background:#1E2440;color:#A5B4FC;border:1px solid #2A3050;border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;white-space:nowrap">🔍 סינון</button>
   </div>
   <div id="filter-panel" style="display:none;margin:8px 20px 0;background:#111827;border:1px solid #2A3050;border-radius:12px;padding:14px">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:12px">
+      <div style="position:relative">
+        <div style="font-size:10px;color:#6B7EAA;margin-bottom:5px">סטטוס</div>
+        <div style="position:relative;display:flex;align-items:center">
+          <input id="filter-stage-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;stage&#39;,this.value)" onkeydown="filterACKey(event,&#39;stage&#39;)" onfocus="filterAC(&#39;stage&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;stage&#39;),200)" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:6px;padding:6px 28px 6px 10px;color:#E2E8F0;font-size:12px;width:100%">
+          <button type="button" onmousedown="event.preventDefault();filterAC(&#39;stage&#39;,document.getElementById(&#39;filter-stage-input&#39;).value)" style="position:absolute;left:6px;background:transparent;border:none;color:#6B7EAA;cursor:pointer;font-size:11px;padding:2px">▼</button>
+        </div>
+        <div id="filter-stage-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:#111827;border:1px solid #3B82F6;border-radius:6px;max-height:160px;overflow-y:auto;box-shadow:0 4px 16px #00000080"></div>
+      </div>
       <div style="position:relative">
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:5px">עובד</div>
         <div style="position:relative;display:flex;align-items:center">
@@ -244,6 +252,7 @@ let filterUser  = "all";
 let filterOrg   = "";
 let filterWorkorder = "";
 let filterType  = "";
+let filterStageAdv = "";
 let expandedId  = null;
 
 const getUser = id => USERS.find(u=>u.id===id);
@@ -488,6 +497,7 @@ function buildUserFilter() {}
 function buildSupportFilter() {}
 // Filter autocomplete data
 var _filterAC = {
+  stage: { val: '', items: [] },
   user: { val: '', items: [] },
   org:  { val: '', items: [] },
   type: { val: '', items: [] }
@@ -498,15 +508,17 @@ function toggleFilterPanel() {
   var btn = document.getElementById('filter-btn');
   if (panel.style.display === 'none') {
     // Populate AC items
+    _filterAC.stage.items = [''].concat(STAGES.map(function(s){ return s.label; }));
     _filterAC.user.items = currentUser && currentUser.role==='admin'
       ? [].concat([{id:'',name:'הכל'}], USERS.map(u=>({id:u.id,name:u.name})))
       : [{id:'',name:'הכל'}];
     var orgs = ["הודיס","יוחננוף","רמי לוי","סופר ספיר","סער טכנולוגיות","שוק העיר","שוק הרצל"].sort(function(a,b){return a.localeCompare(b,'he');});
     _filterAC.org.items = [''].concat(orgs);
-    var types = [...new Set(projects.map(p=>p.type||'').filter(Boolean))].sort();
+    var types = ["ממשק אתר","קופה זרה","ממשק מסופון","ממשק BI","ממשק WMS","ממשק Wolt"];
     _filterAC.type.items = [''].concat(types);
     // Restore current values
     var uName = filterUser ? (USERS.find(u=>u.id===filterUser)||{name:''}).name : '';
+    document.getElementById('filter-stage-input').value = filterStageAdv ? (STAGES.find(function(s){return s.id===filterStageAdv;})||{label:''}).label : '';
     document.getElementById('filter-user-input').value = uName;
     document.getElementById('filter-org-input').value = filterOrg;
     document.getElementById('filter-type-input').value = filterType;
@@ -545,7 +557,8 @@ function filterAC(type, val) {
       e.preventDefault();
       var inputEl = document.getElementById('filter-'+type+'-input');
       inputEl.value = label === 'הכל' ? '' : label;
-      if (type === 'user') filterUser = item.id || '';
+      if (type === 'stage') filterStageAdv = label === 'הכל' ? '' : (STAGES.find(function(s){return s.label===label;})||{id:''}).id;
+      else if (type === 'user') filterUser = item.id || '';
       else if (type === 'org') filterOrg = item || '';
       else if (type === 'type') filterType = item || '';
       dd.style.display = 'none';
@@ -573,7 +586,8 @@ function applyFilters() {
   renderProjects(); buildStagePills();
 }
 function clearFilters() {
-  filterUser = ''; filterOrg = ''; filterWorkorder = ''; filterType = '';
+  filterUser = ''; filterOrg = ''; filterWorkorder = ''; filterType = ''; filterStageAdv = '';
+  document.getElementById('filter-stage-input').value = '';
   document.getElementById('filter-user-input').value = '';
   document.getElementById('filter-org-input').value = '';
   document.getElementById('filter-workorder').value = '';
@@ -583,7 +597,7 @@ function clearFilters() {
 }
 function updateFilterBadge() {
   var btn = document.getElementById('filter-btn');
-  var active = [filterUser, filterOrg, filterWorkorder, filterType].filter(Boolean).length;
+  var active = [filterStageAdv, filterUser, filterOrg, filterWorkorder, filterType].filter(Boolean).length;
   btn.textContent = active > 0 ? '🔍 סינון ('+active+')' : '🔍 סינון';
   btn.style.borderColor = active > 0 ? '#3B82F6' : '#2A3050';
   btn.style.color = active > 0 ? '#3B82F6' : '#A5B4FC';

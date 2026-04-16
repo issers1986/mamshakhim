@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)file:///C:/Users/amit/Downloads/sign_3.html -->
+<!-- saved from url=(0043)file:///C:/Users/amit/Downloads/sign_4.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,7 +84,10 @@ async function loadData() {
   var id = params.id;
   var proj = params.proj;
 
-  if (!id && !params.projId) { showError('קישור לא תקין — חסר מזהה'); return; }
+  if (!id && !params.projId) { 
+    setTimeout(function(){ showError('קישור לא תקין — חסר מזהה'); }, 100);
+    return; 
+  }
 
   document.getElementById('header-sub').textContent = 'אישור פרטי איפיון' + (proj ? ' — ' + proj : '');
 

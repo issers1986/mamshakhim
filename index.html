@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_88.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_89.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -174,7 +174,7 @@ button,input,select{font-family:inherit}
       <div style="position:relative">
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px;display:flex;align-items:center;gap:4px">שם הארגון<span style="background:#EF444420;color:#EF4444;border:1px solid #EF444440;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700">חובה *</span></div>
         <div style="position:relative;display:flex;align-items:center">
-          <input id="proj-org" placeholder="שם הארגון..." autocomplete="off" oninput="orgAutoInput(this.value); if(this.value.trim()) orgValidate(); toggleFieldClear(&#39;proj-org&#39;,&#39;btn-clear-org&#39;)" onkeydown="orgKeyDown(event)" onblur="setTimeout(()=&gt;{ document.getElementById(&#39;org-dropdown&#39;).style.display=&#39;none&#39;; orgValidate(); },200)" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 52px 8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+          <input id="proj-org" placeholder="שם הארגון..." autocomplete="off" oninput="orgAutoInput(this.value); if(this.value.trim()) orgValidate(); toggleFieldClear(&#39;proj-org&#39;,&#39;btn-clear-org&#39;); this.dataset.touched=&#39;1&#39;" onkeydown="orgKeyDown(event)" onblur="setTimeout(()=&gt;{ document.getElementById(&#39;org-dropdown&#39;).style.display=&#39;none&#39;; if(this.dataset.touched) orgValidate(); },200)" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 52px 8px 12px;color:#E2E8F0;font-size:13px;width:100%">
           <button type="button" id="btn-clear-org" onmousedown="event.preventDefault();clearOrgField()" style="display:none;position:absolute;left:28px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
           <button type="button" onclick="orgToggleDropdown()" style="position:absolute;left:8px;background:transparent;border:none;color:#6B7EAA;cursor:pointer;font-size:12px;line-height:1;padding:2px 4px" title="הצג כל לקוחות">▼</button>
         </div>
@@ -530,6 +530,7 @@ var _filterAC = {
 function clearOrgField() {
   var el = document.getElementById('proj-org');
   el.value = '';
+  el.dataset.touched = '';
   el.style.borderColor = '#2A3050';
   document.getElementById('org-dropdown').style.display = 'none';
   document.getElementById('org-error').style.display = 'none';
@@ -1148,6 +1149,7 @@ async function addProject() {
   }) : [];
   document.getElementById("proj-type").value="";
   document.getElementById("proj-org").value="";
+  document.getElementById("proj-org").dataset.touched="";
   document.getElementById("proj-contact").value="";
   document.getElementById("proj-phone").value="";
   document.getElementById("proj-workorder").value="";

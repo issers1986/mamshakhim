@@ -1,43 +1,52 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)file:///C:/Users/amit/Downloads/sign_9.html -->
+<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/sign_10.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>אישור פרטי איפיון — חתימה</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: Arial, sans-serif; background: #f0f4ff; min-height: 100vh; color: #1a1a2e; }
-.header { background: linear-gradient(135deg,#3B82F6,#6366F1); padding: 24px 32px; color: #fff; }
-.header h1 { font-size: 22px; font-weight: 700; }
-.header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+body { font-family: Arial, sans-serif; background: #f0f5f2; min-height: 100vh; color: #1a1a2e; }
+.header { background: #00A651; padding: 0 32px; color: #fff; display: flex; align-items: center; height: 64px; border-bottom: 3px solid #007A3D; }
+.header-logo { font-family: Arial, sans-serif; font-size: 28px; font-weight: 900; color: #fff; letter-spacing: -1px; line-height: 1; }
+.header-divider { width: 1px; height: 32px; background: #ffffff50; margin: 0 16px; }
+.header-text { display: flex; flex-direction: column; }
+.header-text .sub { font-size: 10px; opacity: 0.75; letter-spacing: 2px; text-transform: uppercase; }
+.header-text .title { font-size: 14px; font-weight: 700; }
+.header-proj { margin-right: auto; font-size: 13px; opacity: 0.85; font-weight: 500; }
 .container { max-width: 720px; margin: 28px auto; padding: 0 16px 60px; }
-.card { background: #fff; border-radius: 14px; box-shadow: 0 2px 16px #0001; overflow: hidden; margin-bottom: 20px; }
-.card-header { background: #f8faff; padding: 14px 20px; border-bottom: 1px solid #e5e8f0; font-size: 13px; font-weight: 700; color: #3B82F6; }
+.card { background: #fff; border-radius: 14px; box-shadow: 0 2px 16px #00000012; overflow: hidden; margin-bottom: 20px; }
+.card-header { background: #f0faf5; padding: 14px 20px; border-bottom: 1px solid #C8EDD8; font-size: 13px; font-weight: 700; color: #007A3D; }
 table { width: 100%; border-collapse: collapse; }
 td { padding: 10px 20px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
 td:first-child { color: #666; white-space: nowrap; width: 40%; }
 td:last-child { color: #111; font-weight: 500; }
 .sign-area { padding: 20px; }
 .sign-area label { font-size: 13px; color: #444; margin-bottom: 8px; display: block; font-weight: 600; }
-#sig-canvas { border: 2px solid #3B82F6; border-radius: 10px; background: #fff; cursor: crosshair; display: block; width: 100%; touch-action: none; }
+#sig-canvas { border: 2px solid #00A651; border-radius: 10px; background: #fff; cursor: crosshair; display: block; width: 100%; touch-action: none; }
 .sign-controls { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
 .btn { padding: 10px 22px; border-radius: 9px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
 .btn-clear { background: #f1f5f9; color: #666; }
-.btn-submit { background: linear-gradient(135deg,#10B981,#059669); color: #fff; flex: 1; font-size: 15px; padding: 13px; }
+.btn-submit { background: #00A651; color: #fff; flex: 1; font-size: 15px; padding: 13px; }
 .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 .status { text-align: center; padding: 40px 20px; }
 .status .icon { font-size: 56px; margin-bottom: 12px; }
-.status h2 { font-size: 22px; font-weight: 700; color: #10B981; }
+.status h2 { font-size: 22px; font-weight: 700; color: #00A651; }
 .status p { color: #666; font-size: 14px; margin-top: 8px; }
-.already-signed { background: #f0fdf4; border: 1px solid #10B98140; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+.already-signed { background: #f0faf5; border: 1px solid #00A65140; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
 .loading { text-align: center; padding: 60px; color: #888; font-size: 15px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🗂️ מחלקת ממשקים — COMAX</h1>
-  <p id="header-sub">אישור פרטי איפיון וחתימה</p>
+  <div class="header-logo">COMAX</div>
+  <div class="header-divider"></div>
+  <div class="header-text">
+    <span class="sub">מחלקת ממשקים</span>
+    <span class="title">אישור פרטי איפיון</span>
+  </div>
+  <div class="header-proj" id="header-sub"></div>
 </div>
 
 <div class="container" id="main-container"><div class="card"><div class="status"><div class="icon">❌</div><h2 style="color:#EF4444">שגיאה</h2><p>קישור לא תקין — חסר מזהה</p></div></div></div>
@@ -91,7 +100,7 @@ async function loadData() {
     return; 
   }
 
-  document.getElementById('header-sub').textContent = 'אישור פרטי איפיון' + (proj ? ' — ' + proj : '');
+  document.getElementById('header-sub').textContent = proj ? '— ' + proj : '';
 
   try {
     var url;

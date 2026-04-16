@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_97.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_98.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,7 +41,7 @@ button,input,select,textarea{font-family:inherit}
 </script>
 
 
-<div id="login-screen" class="hidden">
+<div id="login-screen">
   <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%)">
     <div style="width:480px;max-width:94vw;padding:0 16px">
       <div style="text-align:center;margin-bottom:36px">
@@ -54,7 +54,7 @@ button,input,select,textarea{font-family:inherit}
       <div>
         <div style="color:var(--text);font-size:13px;font-weight:600">עמית איסרס</div>
         <div style="color:#3B82F6;font-size:10px">👑 מנהל 🔒</div>
-      </div></div><div id="user-card-merav" style="background: rgba(139, 92, 246, 0.133); border: 1.5px solid rgb(139, 92, 246); border-radius: var(--radius-md); padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
+      </div></div><div id="user-card-merav" style="background: var(--card); border: 1.5px solid var(--border2); border-radius: var(--radius-md); padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
       <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#8B5CF6,#8B5CF688);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">מה</div>
       <div>
         <div style="color:var(--text);font-size:13px;font-weight:600">מירב הזז</div>
@@ -84,12 +84,14 @@ button,input,select,textarea{font-family:inherit}
         <input id="password-input" type="password" placeholder="הכנס סיסמה..." onkeydown="if(event.key===&#39;Enter&#39;)doLogin()" style="width:100%;padding:12px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:15px;outline:none;text-align:right">
         <div id="password-error" style="color:#DC3545;font-size:12px;margin-top:6px;text-align:center;display:none"></div>
       </div>
-      <button onclick="doLogin()" id="login-btn" style="width: 100%; padding: 13px; border-radius: var(--radius-sm); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: var(--green); color: rgb(255, 255, 255); font-size: 15px; font-weight: 700; cursor: pointer;">התחבר/י כמירב הזז</button>
+      <button onclick="doLogin()" id="login-btn" style="width:100%;padding:13px;border-radius:var(--radius-sm);border:none;background:var(--bg3);color:var(--text3);font-size:15px;font-weight:700;cursor:not-allowed">
+        בחר/י משתמש
+      </button>
     </div>
   </div>
 </div>
 
-<div id="app-screen" class="">
+<div id="app-screen" class="hidden">
   <div id="header" style="background:var(--bg2);border-bottom:2px solid var(--green);padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;height:60px;box-shadow:var(--shadow-sm)">
     <div style="display:flex;align-items:center;gap:14px;flex:1">
       <div style="font-family:Arial,sans-serif;font-size:24px;font-weight:900;color:var(--green);letter-spacing:-1px;line-height:1">COMAX</div>
@@ -99,43 +101,13 @@ button,input,select,textarea{font-family:inherit}
         <div style="font-size:14px;font-weight:700;color:var(--text)">בקרת פרויקטים</div>
       </div>
     </div>
-    <div id="user-chip">
-    <div style="display:flex;align-items:center;gap:9px;background:var(--card);border:1.5px solid #8B5CF660;border-radius:30px;padding:6px 14px;box-shadow:var(--shadow-sm)">
-      <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#8B5CF6,#8B5CF680);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">מה</div>
-      <div>
-        <div style="font-size:12px;font-weight:600;color:var(--text)">מירב הזז</div>
-        <div style="font-size:9px;color:#8B5CF6">👑 מנהלת</div>
-      </div>
-      <button onclick="openChangePw()" title="שנה סיסמה" style="background:transparent;border:none;color:var(--gray-400);cursor:pointer;font-size:13px">🔑</button>
-      <button onclick="logout()" style="background:transparent;border:none;color:var(--gray-400);cursor:pointer;font-size:11px">✕</button>
-    </div></div>
+    <div id="user-chip"></div>
     <button onclick="showForm()" style="background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">
       <span style="font-size:16px;line-height:1">+</span> פרויקט חדש
     </button>
   </div>
 
-  <div id="stage-pills" style="display:none"><div onclick="setFilter(&#39;open&#39;)" style="background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px">
-      <span style="font-size:14px">📂</span>
-      <div><div style="font-size:9px;color:var(--text3)">פתוח</div><div style="font-size:18px;font-weight:700;color:#3B82F6">7</div></div>
-    </div><div onclick="setFilter(&#39;approved&#39;)" style="background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px">
-      <span style="font-size:14px">🔄</span>
-      <div><div style="font-size:9px;color:var(--text3)">בתהליך</div><div style="font-size:18px;font-weight:700;color:#8B5CF6">2</div></div>
-    </div><div onclick="setFilter(&#39;inprogress&#39;)" style="background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px">
-      <span style="font-size:14px">⏳</span>
-      <div><div style="font-size:9px;color:var(--text3)">ממתין ללקוח</div><div style="font-size:18px;font-weight:700;color:#10B981">2</div></div>
-    </div><div onclick="setFilter(&#39;waiting&#39;)" style="background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px">
-      <span style="font-size:14px">🕐</span>
-      <div><div style="font-size:9px;color:var(--text3)">ממתין לצד ג׳</div><div style="font-size:18px;font-weight:700;color:#F59E0B">0</div></div>
-    </div><div onclick="setFilter(&#39;done&#39;)" style="background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px">
-      <span style="font-size:14px">✅</span>
-      <div><div style="font-size:9px;color:var(--text3)">בוצע</div><div style="font-size:18px;font-weight:700;color:#06B6D4">1</div></div>
-    </div><div onclick="setFilter(&#39;closed&#39;)" style="background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px">
-      <span style="font-size:14px">🏁</span>
-      <div><div style="font-size:9px;color:var(--text3)">סגור</div><div style="font-size:18px;font-weight:700;color:#6B7280">1</div></div>
-    </div><div onclick="setFilter(&#39;all&#39;)" style="background:var(--green-deeper);border:1px solid var(--green);border-radius:10px;padding:7px 12px;cursor:pointer;display:flex;align-items:center;gap:6px">
-    <span style="font-size:14px">📋</span>
-    <div><div style="font-size:9px;color:var(--text3)">הכל</div><div style="font-size:16px;font-weight:700;color:#fff">13</div></div>
-  </div></div>
+  <div id="stage-pills" style="display:none"></div>
   <div style="padding:12px 24px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
     <div id="advanced-filter-bar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:1"></div>
     <button onclick="toggleFilterPanel()" id="filter-btn" style="background:var(--card);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 16px;font-size:12px;cursor:pointer;white-space:nowrap;font-weight:600">🔍 סינון</button>
@@ -192,7 +164,7 @@ button,input,select,textarea{font-family:inherit}
   </div>
 
   <div id="new-project-form" class="hidden" style="margin:14px 24px 0;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:20px;border-top:3px solid var(--green)">
-    <div id="form-title" style="font-size:14px;font-weight:700;color:var(--gray-800);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">📝 פרויקט חדש — מירב הזז</div>
+    <div id="form-title" style="font-size:14px;font-weight:700;color:var(--gray-800);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">📝 פרויקט חדש</div>
     <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:9px">
       <div>
         <div style="font-size:10px;color:var(--text3);margin-bottom:3px;display:flex;align-items:center;gap:4px">סוג<span style="background:#EF444420;color:#EF4444;border:1px solid #EF444440;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700">חובה *</span></div>
@@ -251,254 +223,7 @@ button,input,select,textarea{font-family:inherit}
     </div>
   </div>
 
-  <div id="project-list" style="padding:14px 24px 44px">
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(31)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#3B82F615;border:1.5px solid #3B82F650;border-radius:20px;padding:4px 12px;font-size:11px;color:#3B82F6;font-weight:700;white-space:nowrap">📂 פתוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">הודיס</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">1212122</div></div>
-            </div>
-          </div>
-          <span style="background:#10B98118;color:#10B981;border:1px solid #10B98130;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(30)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#3B82F615;border:1.5px solid #3B82F650;border-radius:20px;padding:4px 12px;font-size:11px;color:#3B82F6;font-weight:700;white-space:nowrap">📂 פתוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">יוחננוף</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">34567</div></div>
-            </div>
-          </div>
-          <span style="background:#10B98118;color:#10B981;border:1px solid #10B98130;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(29)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#06B6D415;border:1.5px solid #06B6D450;border-radius:20px;padding:4px 12px;font-size:11px;color:#06B6D4;font-weight:700;white-space:nowrap">✅ בוצע</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">שוק העיר</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">5555</div></div>
-            </div>
-          </div>
-          <span style="background:#F59E0B18;color:#F59E0B;border:1px solid #F59E0B30;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">קופה זרה</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(28)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#8B5CF615;border:1.5px solid #8B5CF650;border-radius:20px;padding:4px 12px;font-size:11px;color:#8B5CF6;font-weight:700;white-space:nowrap">🔄 בתהליך</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">הודיס</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">11111</div></div>
-            </div>
-          </div>
-          <span style="background:#10B98118;color:#10B981;border:1px solid #10B98130;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(27)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#8B5CF615;border:1.5px solid #8B5CF650;border-radius:20px;padding:4px 12px;font-size:11px;color:#8B5CF6;font-weight:700;white-space:nowrap">🔄 בתהליך</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">יוחננוף</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">504141</div></div>
-            </div>
-          </div>
-          <span style="background:#10B98118;color:#10B981;border:1px solid #10B98130;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(25)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#3B82F615;border:1.5px solid #3B82F650;border-radius:20px;padding:4px 12px;font-size:11px;color:#3B82F6;font-weight:700;white-space:nowrap">📂 פתוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">הודיס</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">11111</div></div>
-            </div>
-          </div>
-          <span style="background:#10B98118;color:#10B981;border:1px solid #10B98130;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(23)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#10B98115;border:1.5px solid #10B98150;border-radius:20px;padding:4px 12px;font-size:11px;color:#10B981;font-weight:700;white-space:nowrap">⏳ ממתין ללקוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">הודיס</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">121113</div></div>
-            </div>
-          </div>
-          <span style="background:#10B98118;color:#10B981;border:1px solid #10B98130;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(20)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#3B82F615;border:1.5px solid #3B82F650;border-radius:20px;padding:4px 12px;font-size:11px;color:#3B82F6;font-weight:700;white-space:nowrap">📂 פתוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">נייטיב</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">11111</div></div>
-            </div>
-          </div>
-          <span style="background:#8B5CF618;color:#A78BFA;border:1px solid #8B5CF630;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר+סליקה</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(19)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#3B82F615;border:1.5px solid #3B82F650;border-radius:20px;padding:4px 12px;font-size:11px;color:#3B82F6;font-weight:700;white-space:nowrap">📂 פתוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">קומקס</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">1234</div></div>
-            </div>
-          </div>
-          <span style="background:#8B5CF618;color:#A78BFA;border:1px solid #8B5CF630;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר+סליקה</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#8B5CF6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">מה</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">מירב הזז</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(17)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#10B98115;border:1.5px solid #10B98150;border-radius:20px;padding:4px 12px;font-size:11px;color:#10B981;font-weight:700;white-space:nowrap">⏳ ממתין ללקוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">קומקס</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">123245</div></div>
-            </div>
-          </div>
-          <span style="background:#8B5CF618;color:#A78BFA;border:1px solid #8B5CF630;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר+סליקה</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#3B82F6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">עא</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">עמית איסרס</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(16)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#6B728015;border:1.5px solid #6B728050;border-radius:20px;padding:4px 12px;font-size:11px;color:#6B7280;font-weight:700;white-space:nowrap">🏁 סגור</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">שם ארגון</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">עעעע</div></div>
-              <div><div style="font-size:10px;color:var(--text3);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px">מספר הזמנה</div><div style="font-size:15px;font-weight:700;color:var(--gray-900)">12345</div></div>
-            </div>
-          </div>
-          <span style="background:#8B5CF618;color:#A78BFA;border:1px solid #8B5CF630;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">ממשק אתר+סליקה</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#3B82F6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">עא</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">עמית איסרס</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(2)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#3B82F615;border:1.5px solid #3B82F650;border-radius:20px;padding:4px 12px;font-size:11px;color:#3B82F6;font-weight:700;white-space:nowrap">📂 פתוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              
-              
-            </div>
-          </div>
-          <span style="background:#8B5CF618;color:#A78BFA;border:1px solid #8B5CF630;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">API</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#10B981;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">שי</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">שיר ינאי</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);">
-        <div onclick="toggleExpand(1)" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--card)">
-          <div style="background:#3B82F615;border:1.5px solid #3B82F650;border-radius:20px;padding:4px 12px;font-size:11px;color:#3B82F6;font-weight:700;white-space:nowrap">📂 פתוח</div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;gap:24px;flex-wrap:wrap">
-              
-              
-            </div>
-          </div>
-          <span style="background:#8B5CF618;color:#A78BFA;border:1px solid #8B5CF630;border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">API</span>
-          
-      <div style="display:flex;align-items:center;gap:6px">
-        <div style="width:24px;height:24px;border-radius:50%;background:#3B82F6;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff">עא</div>
-        <span style="font-size:11px;color:var(--gray-600);font-weight:500">עמית איסרס</span>
-      </div>
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:none">▼</span>
-        </div>
-        
-      </div></div>
+  <div id="project-list" style="padding:14px 24px 44px"></div>
 </div>
 
 <!-- Change Password Modal -->

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0043)file:///C:/Users/amit/Downloads/sign_6.html -->
+<!-- saved from url=(0043)file:///C:/Users/amit/Downloads/sign_7.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +40,8 @@ td:last-child { color: #111; font-weight: 500; }
   <p id="header-sub">אישור פרטי איפיון וחתימה</p>
 </div>
 
-<div class="container" id="main-container"></div><style>
+<div class="container" id="main-container"><div class="card"><div class="status"><div class="icon">❌</div><h2 style="color:#EF4444">שגיאה</h2><p>קישור לא תקין — חסר מזהה</p></div></div></div>
+<style>
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 
@@ -239,6 +240,8 @@ async function submitSignature(subId) {
   var canvas = document.getElementById('sig-canvas');
   var signatureData = canvas.toDataURL('image/png');
   var signedAt = new Date().toISOString();
+  var params = getParams();
+  var projName = params.proj || '';
 
   var res = await fetch(SUPABASE_URL + '/rest/v1/form_submissions?id=eq.' + subId, {
     method: 'PATCH',
@@ -250,6 +253,15 @@ async function submitSignature(subId) {
   });
 
   if (res.ok) {
+    // Send notification email
+    var formData = new FormData();
+    formData.append('type', 'signature_received');
+    formData.append('projName', projName);
+    formData.append('signedAt', signedAt);
+    fetch('https://script.google.com/macros/s/AKfycby1hcwdMy3Jdl0veLnVtSS1HWK7R0k6rgv2gcRP-cQlbFXoEX92nuIAtHvLQJR4y4aL/exec', {
+      method: 'POST', mode: 'no-cors', body: formData
+    }).catch(function(){});
+
     document.getElementById('main-container').innerHTML =
       '<div class="card"><div class="status">' +
       '<div class="icon">✅</div>' +

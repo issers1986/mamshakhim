@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/sign_12.html -->
+<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/sign_13.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -157,14 +157,33 @@ function renderPage(sub) {
   // Signature section
   if (!alreadySigned) {
     html += '<div class="card">' +
-      '<div class="card-header">✍️ חתימה</div>' +
+      '<div class="card-header">✍️ חתימה ואישור</div>' +
       '<div class="sign-area">' +
       '<label>אני מאשר/ת את פרטי האיפיון המפורטים לעיל ומצהיר/ה שהם נכונים</label>' +
-      '<canvas id="sig-canvas" height="160"></canvas>' +
-      '<div class="sign-controls">' +
-      '<button class="btn btn-clear" onclick="clearCanvas()">🗑 נקה</button>' +
-      '<button class="btn btn-submit" id="btn-submit" onclick="submitSignature(\'' + sub.id + '\')">✅ אישור וחתימה</button>' +
+
+      // Tabs
+      '<div style="display:flex;gap:0;margin-bottom:14px;border:1px solid #00A651;border-radius:8px;overflow:hidden">' +
+      '<button id="tab-draw" onclick="switchTab(\'draw\')" style="flex:1;padding:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:#00A651;color:#fff">✍️ חתימה ידנית</button>' +
+      '<button id="tab-stamp" onclick="switchTab(\'stamp\')" style="flex:1;padding:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;background:#fff;color:#00A651">🏢 חותמת חברה</button>' +
       '</div>' +
+
+      // Draw panel
+      '<div id="panel-draw">' +
+      '<canvas id="sig-canvas" height="160"></canvas>' +
+      '<div style="display:flex;gap:8px;margin-top:10px">' +
+      '<button class="btn btn-clear" onclick="clearCanvas()">🗑 נקה</button>' +
+      '</div>' +
+      '</div>' +
+
+      // Stamp panel
+      '<div id="panel-stamp" style="display:none">' +
+      '<div id="stamp-preview" style="min-height:120px;border:2px dashed #00A651;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f0faf5;margin-bottom:10px;cursor:pointer" onclick="document.getElementById(\'stamp-input\').click()">' +
+      '<div style="text-align:center;color:#00A651"><div style="font-size:32px;margin-bottom:6px">📁</div><div style="font-size:13px;font-weight:600">לחץ להעלאת תמונת חותמת</div><div style="font-size:11px;opacity:0.7;margin-top:3px">PNG, JPG עד 2MB</div></div>' +
+      '</div>' +
+      '<input type="file" id="stamp-input" accept="image/*" style="display:none" onchange="loadStamp(this)">' +
+      '</div>' +
+
+      '<button class="btn btn-submit" id="btn-submit" style="width:100%;margin-top:12px" onclick="submitSignature(\'' + sub.id + '\')">✅ אישור וחתימה</button>' +
       '</div></div>';
   } else {
     html += '<div class="card">' +
@@ -224,6 +243,48 @@ function initCanvas() {
   canvas.addEventListener('touchend', stop);
 }
 
+var _stampDataUrl = null;
+
+function switchTab(tab) {
+  var drawPanel = document.getElementById('panel-draw');
+  var stampPanel = document.getElementById('panel-stamp');
+  var tabDraw = document.getElementById('tab-draw');
+  var tabStamp = document.getElementById('tab-stamp');
+  if (!drawPanel) return;
+  if (tab === 'draw') {
+    drawPanel.style.display = 'block';
+    stampPanel.style.display = 'none';
+    tabDraw.style.background = '#00A651'; tabDraw.style.color = '#fff';
+    tabStamp.style.background = '#fff'; tabStamp.style.color = '#00A651';
+  } else {
+    drawPanel.style.display = 'none';
+    stampPanel.style.display = 'block';
+    tabDraw.style.background = '#fff'; tabDraw.style.color = '#00A651';
+    tabStamp.style.background = '#00A651'; tabStamp.style.color = '#fff';
+  }
+}
+
+function loadStamp(input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { alert('הקובץ גדול מדי — מקסימום 2MB'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    _stampDataUrl = e.target.result;
+    var preview = document.getElementById('stamp-preview');
+    preview.innerHTML = '<img src="' + _stampDataUrl + '" style="max-height:140px;max-width:100%;border-radius:8px;object-fit:contain">' +
+      '<div style="margin-top:8px"><button onclick="clearStamp()" style="background:transparent;border:none;color:#DC3545;font-size:12px;cursor:pointer">✕ הסר</button></div>';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearStamp() {
+  _stampDataUrl = null;
+  var preview = document.getElementById('stamp-preview');
+  preview.innerHTML = '<div style="text-align:center;color:#00A651"><div style="font-size:32px;margin-bottom:6px">📁</div><div style="font-size:13px;font-weight:600">לחץ להעלאת תמונת חותמת</div><div style="font-size:11px;opacity:0.7;margin-top:3px">PNG, JPG עד 2MB</div></div>';
+  preview.onclick = function(){ document.getElementById('stamp-input').click(); };
+}
+
 function clearCanvas() {
   var canvas = document.getElementById('sig-canvas');
   if (!canvas) return;
@@ -239,16 +300,23 @@ function isCanvasEmpty() {
 }
 
 async function submitSignature(subId) {
-  if (isCanvasEmpty()) {
-    alert('נא לחתום לפני האישור');
-    return;
+  var stampPanel = document.getElementById('panel-stamp');
+  var useStamp = stampPanel && stampPanel.style.display !== 'none';
+
+  var signatureData;
+  if (useStamp) {
+    if (!_stampDataUrl) { alert('נא להעלות תמונת חותמת'); return; }
+    signatureData = _stampDataUrl;
+  } else {
+    if (isCanvasEmpty()) { alert('נא לחתום לפני האישור'); return; }
+    var canvas = document.getElementById('sig-canvas');
+    signatureData = canvas.toDataURL('image/png');
   }
+
   var btn = document.getElementById('btn-submit');
   btn.disabled = true;
   btn.textContent = '⏳ שומר...';
 
-  var canvas = document.getElementById('sig-canvas');
-  var signatureData = canvas.toDataURL('image/png');
   var signedAt = new Date().toISOString();
   var params = getParams();
   var projName = params.proj || '';

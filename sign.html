@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/sign_11.html -->
+<!-- saved from url=(0044)file:///C:/Users/amit/Downloads/sign_12.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,7 +85,7 @@ var lastX = 0, lastY = 0;
 
 function getParams() {
   var p = new URLSearchParams(location.search);
-  return { id: p.get('id'), projId: p.get('projId'), proj: p.get('proj') || '', owner: p.get('owner') || '' };
+  return { id: p.get('id'), projId: p.get('projId'), proj: p.get('proj') || '', owner: p.get('owner') || '', type: p.get('type') || '' };
 }
 
 async function loadData() {
@@ -98,7 +98,10 @@ async function loadData() {
     return; 
   }
 
-  document.getElementById('header-sub').textContent = proj ? 'אישור פרטי איפיון — ' + proj : 'אישור פרטי איפיון';
+  var titleParts = [];
+  if (params.type) titleParts.push(params.type);
+  if (proj) titleParts.push(proj);
+  document.getElementById('header-sub').textContent = titleParts.length > 0 ? 'אישור פרטי איפיון — ' + titleParts.join(' | ') : 'אישור פרטי איפיון';
 
   try {
     var url;

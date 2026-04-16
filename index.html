@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_93.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_94.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1320,43 +1320,27 @@ async function sendForSignature(projId) {
   sub.signature_sent_at = sentAt;
   renderAipiunView(projId, sub);
 
-  // Build field rows HTML for email
-  var fieldLabels = {
-    org_name:'שם ארגון', company_name:'שם חברה', has_active:'ממשק פעיל',
-    contact1_name:'איש קשר 1', contact1_phone:'נייד 1', contact1_email:'מייל 1', contact1_role:'תפקיד 1',
-    contact2_name:'איש קשר 2', contact2_phone:'נייד 2', contact2_email:'מייל 2',
-    dev_name:'מתכנת', dev_company:'חברת פיתוח', dev_email:'מייל מתכנת', dev_phone:'נייד מתכנת', dev_site:'אתר',
-    agreement_signed:'הסכם חתום', work_order:'הזמנת עבודה',
-    slika:'סליקה בקומקס', weighted_items:'פריטים שקילים', deposit:'ניהול פיקדון',
-    doc_type:'מסמך חשבונאי', order_close:'סגירת הזמנה', branch_doc:'סניף רישום מסמך', branch_stock:'סניף ירידת מלאי',
-    night_plan:'תוכנית לילה', customer_type:'סוג לקוח', rewards:'תגמולים', price_list:'מחירון', notes:'דגשים'
-  };
-  var rows = '';
-  Object.keys(fieldLabels).forEach(function(k) {
-    if (!sub[k]) return;
-    rows += '<tr><td style="padding:8px 14px;color:#555;font-size:13px;border-bottom:1px solid #eee;white-space:nowrap;text-align:right">' + fieldLabels[k] + '</td>' +
-            '<td style="padding:8px 14px;color:#111;font-size:13px;border-bottom:1px solid #eee;text-align:right">' + sub[k] + '</td></tr>';
-  });
+  var orgName = proj ? (proj.org || '') : '';
 
   var emailHtml = '<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"></head><body style="font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px">' +
-    '<div style="max-width:640px;margin:auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px #0001">' +
-    '<div style="background:linear-gradient(135deg,#3B82F6,#6366F1);padding:28px 32px">' +
-    '<div style="color:#fff;font-size:22px;font-weight:700">מחלקת ממשקים — COMAX</div>' +
-    '<div style="color:#ffffffcc;font-size:14px;margin-top:4px">סיכום פרטי האיפיון לאישור וחתימה</div>' +
+    '<div style="max-width:560px;margin:auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px #0001">' +
+    '<div style="background:linear-gradient(135deg,#3B82F6,#6366F1);padding:24px 32px">' +
+    '<div style="color:#fff;font-size:20px;font-weight:700">מחלקת ממשקים — COMAX</div>' +
     '</div>' +
-    '<div style="padding:24px 32px">' +
-    '<p style="color:#333;font-size:14px">שלום,</p>' +
-    '<p style="color:#333;font-size:14px">מצורפים פרטי האיפיון לפרויקט <strong>' + (proj ? (proj.org || '') : '') + '</strong>. נא לעיין ולאשר בחתימה.</p>' +
-    '<table style="width:100%;border-collapse:collapse;margin:20px 0">' + rows + '</table>' +
-    '<div style="text-align:center;margin:28px 0">' +
-    '<a href="' + signUrl + '" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:14px 36px;border-radius:10px;text-decoration:none;font-size:15px;font-weight:700;display:inline-block">✍️ לחץ כאן לחתימה</a>' +
-    '</div>' +
-    '<p style="color:#888;font-size:12px;text-align:center">אם אינך יכול ללחוץ על הכפתור, העתק את הקישור: ' + signUrl + '</p>' +
+    '<div style="padding:28px 32px">' +
+    '<p style="color:#333;font-size:15px;margin-bottom:12px">שלום,</p>' +
+    '<p style="color:#333;font-size:15px;margin-bottom:24px">לקראת תחילת העבודה על הפרויקט <strong>' + orgName + '</strong>, מצורפים פרטי האיפיון לעיון ולאישור בחתימה.</p>' +
+    '<p style="margin:28px 0;text-align:center">' +
+    '<a href="' + signUrl + '" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:14px 36px;border-radius:10px;text-decoration:none;font-size:15px;font-weight:700;display:inline-block">✍️ לצפייה ולחתימה ←</a>' +
+    '</p>' +
+    '<p style="color:#aaa;font-size:11px;text-align:center;margin-top:20px">אם הכפתור לא עובד, העתק: ' + signUrl + '</p>' +
+    '<hr style="border:none;border-top:1px solid #eee;margin:24px 0">' +
+    '<p style="color:#888;font-size:13px">בברכה,<br><strong>מחלקת ממשקים — קומקס</strong></p>' +
     '</div></div></body></html>';
 
   var formData = new FormData();
   formData.append('toEmail', toEmail);
-  formData.append('subject', 'אישור פרטי איפיון — ' + (proj ? (proj.org || '') : ''));
+  formData.append('subject', 'אישור פרטי איפיון — ' + orgName);
   formData.append('htmlBody', emailHtml);
   formData.append('projId', projId);
   formData.append('type', 'signature_request');

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_92.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_93.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1560,10 +1560,13 @@ function renderAipiunView(projId, sub) {
   });
   // Show signature if exists
   if (sub.signature) {
-    html += '<div style="grid-column:1/-1;background:#0a0d1a;border:1px solid #10B98140;border-radius:6px;padding:8px 10px">' +
-      '<div style="font-size:9px;color:#10B981;margin-bottom:6px;font-weight:700">✍️ חתימת לקוח</div>' +
-      '<img src="' + sub.signature + '" style="max-width:260px;border-radius:4px;border:1px solid #1E2440">' +
-      (sub.signed_at ? '<div style="font-size:9px;color:#4A5580;margin-top:4px">נחתם: ' + new Intl.DateTimeFormat("he-IL",{timeZone:"Asia/Jerusalem",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(sub.signed_at)) + '</div>' : '') +
+    html += '<div style="grid-column:1/-1;background:linear-gradient(135deg,#10B98110,#0596690a);border:2px solid #10B98150;border-radius:10px;padding:14px 16px;margin-top:4px">' +
+      '<div style="font-size:11px;color:#10B981;margin-bottom:10px;font-weight:700;display:flex;align-items:center;gap:6px">✍️ חתימת לקוח' +
+      (sub.signed_at ? '<span style="font-size:9px;color:#4A5580;font-weight:400;margin-right:8px">נחתם: ' + new Intl.DateTimeFormat("he-IL",{timeZone:"Asia/Jerusalem",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(sub.signed_at)) + '</span>' : '') +
+      '</div>' +
+      '<div style="background:#fff;border-radius:8px;padding:10px;display:inline-block;box-shadow:0 2px 12px #00000020">' +
+      '<img src="' + sub.signature + '" style="max-width:320px;max-height:120px;display:block">' +
+      '</div>' +
       '</div>';
   }
   html += '</div>';

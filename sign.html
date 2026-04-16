@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)file:///C:/Users/amit/Downloads/sign_1.html -->
+<html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אישור פרטי איפיון — חתימה</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Arial, sans-serif; background: #f0f4ff; min-height: 100vh; color: #1a1a2e; }
+.header { background: linear-gradient(135deg,#3B82F6,#6366F1); padding: 24px 32px; color: #fff; }
+.header h1 { font-size: 22px; font-weight: 700; }
+.header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+.container { max-width: 720px; margin: 28px auto; padding: 0 16px 60px; }
+.card { background: #fff; border-radius: 14px; box-shadow: 0 2px 16px #0001; overflow: hidden; margin-bottom: 20px; }
+.card-header { background: #f8faff; padding: 14px 20px; border-bottom: 1px solid #e5e8f0; font-size: 13px; font-weight: 700; color: #3B82F6; }
+table { width: 100%; border-collapse: collapse; }
+td { padding: 10px 20px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+td:first-child { color: #666; white-space: nowrap; width: 40%; }
+td:last-child { color: #111; font-weight: 500; }
+.sign-area { padding: 20px; }
+.sign-area label { font-size: 13px; color: #444; margin-bottom: 8px; display: block; font-weight: 600; }
+#sig-canvas { border: 2px solid #3B82F6; border-radius: 10px; background: #fff; cursor: crosshair; display: block; width: 100%; touch-action: none; }
+.sign-controls { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.btn { padding: 10px 22px; border-radius: 9px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn-clear { background: #f1f5f9; color: #666; }
+.btn-submit { background: linear-gradient(135deg,#10B981,#059669); color: #fff; flex: 1; font-size: 15px; padding: 13px; }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.status { text-align: center; padding: 40px 20px; }
+.status .icon { font-size: 56px; margin-bottom: 12px; }
+.status h2 { font-size: 22px; font-weight: 700; color: #10B981; }
+.status p { color: #666; font-size: 14px; margin-top: 8px; }
+.already-signed { background: #f0fdf4; border: 1px solid #10B98140; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+.loading { text-align: center; padding: 60px; color: #888; font-size: 15px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🗂️ מחלקת ממשקים — COMAX</h1>
+  <p id="header-sub">אישור פרטי איפיון וחתימה</p>
+</div>
+
+<div class="container" id="main-container"><div class="card"><div class="status"><div class="icon">❌</div><h2 style="color:#EF4444">שגיאה</h2><p>קישור לא תקין — חסר מזהה</p></div></div></div>
+
+<script>
+const SUPABASE_URL = "https://gxhwzhxuydjlfdhpzwap.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4aHd6aHh1eWRqbGZkaHB6d2FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1ODM1NDcsImV4cCI6MjA5MTE1OTU0N30.Rnasvuv8463sE8GVnon_iQK5FI3cwoKaaL7gN1RSqow";
+
+const FIELD_LABELS = {
+  org_name:'שם ארגון', company_name:'שם חברה', has_active:'ממשק פעיל',
+  contact1_name:'איש קשר 1', contact1_phone:'נייד 1', contact1_email:'מייל 1', contact1_role:'תפקיד 1',
+  contact2_name:'איש קשר 2', contact2_phone:'נייד 2', contact2_email:'מייל 2',
+  dev_name:'מתכנת', dev_company:'חברת פיתוח', dev_email:'מייל מתכנת', dev_phone:'נייד מתכנת', dev_site:'אתר',
+  agreement_signed:'הסכם חתום', work_order:'הזמנת עבודה',
+  slika:'סליקה בקומקס', weighted_items:'פריטים שקילים', deposit:'ניהול פיקדון',
+  doc_type:'מסמך חשבונאי', order_close:'סגירת הזמנה', branch_doc:'סניף רישום מסמך', branch_stock:'סניף ירידת מלאי',
+  night_plan:'תוכנית לילה', customer_type:'סוג לקוח', rewards:'תגמולים', price_list:'מחירון', notes:'דגשים'
+};
+
+const SECTIONS = [
+  { title: '🏢 פרטי חברה', keys: ['org_name','company_name','has_active'] },
+  { title: '👤 איש קשר 1', keys: ['contact1_name','contact1_phone','contact1_email','contact1_role'] },
+  { title: '👤 איש קשר 2', keys: ['contact2_name','contact2_phone','contact2_email'] },
+  { title: '💻 מתכנת', keys: ['dev_name','dev_company','dev_email','dev_phone','dev_site'] },
+  { title: '📄 הסכמים', keys: ['agreement_signed','work_order'] },
+  { title: '⚙️ הגדרות', keys: ['slika','weighted_items','deposit','doc_type','order_close','branch_doc','branch_stock','night_plan','customer_type','rewards','price_list'] },
+  { title: '📝 דגשים', keys: ['notes'] }
+];
+
+// Canvas drawing state
+var isDrawing = false;
+var lastX = 0, lastY = 0;
+
+function getParams() {
+  var p = new URLSearchParams(location.search);
+  return { id: p.get('id'), projId: p.get('projId'), proj: p.get('proj') || '' };
+}
+
+async function loadData() {
+  var params = getParams();
+  var id = params.id;
+  var proj = params.proj;
+
+  if (!id && !params.projId) { showError('קישור לא תקין — חסר מזהה'); return; }
+
+  document.getElementById('header-sub').textContent = 'אישור פרטי איפיון' + (proj ? ' — ' + proj : '');
+
+  var url;
+  if (id) {
+    url = SUPABASE_URL + '/rest/v1/form_submissions?id=eq.' + id;
+  } else {
+    url = SUPABASE_URL + '/rest/v1/form_submissions?project_id=eq.' + params.projId + '&order=submitted_at.desc&limit=1';
+  }
+
+  var res = await fetch(url, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  var data = await res.json();
+  if (!Array.isArray(data) || data.length === 0) { showError('לא נמצאו פרטים לפרויקט זה'); return; }
+
+  var sub = data[0];
+  renderPage(sub);
+}
+
+function renderPage(sub) {
+  var container = document.getElementById('main-container');
+  var alreadySigned = !!sub.signature;
+
+  var html = '';
+
+  // Already signed banner
+  if (alreadySigned) {
+    var signedDate = sub.signed_at ? new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(sub.signed_at)) : '';
+    html += '<div class="already-signed">' +
+      '<span style="font-size:28px">✅</span>' +
+      '<div><div style="font-weight:700;color:#10B981;font-size:14px">מסמך זה כבר נחתם</div>' +
+      (signedDate ? '<div style="font-size:12px;color:#666;margin-top:2px">נחתם בתאריך: ' + signedDate + '</div>' : '') +
+      '</div></div>';
+  }
+
+  // Fields sections
+  SECTIONS.forEach(function(sec) {
+    var rows = '';
+    sec.keys.forEach(function(k) {
+      if (!sub[k]) return;
+      rows += '<tr><td>' + FIELD_LABELS[k] + '</td><td>' + sub[k] + '</td></tr>';
+    });
+    if (!rows) return;
+    html += '<div class="card">' +
+      '<div class="card-header">' + sec.title + '</div>' +
+      '<table>' + rows + '</table>' +
+      '</div>';
+  });
+
+  // Signature section
+  if (!alreadySigned) {
+    html += '<div class="card">' +
+      '<div class="card-header">✍️ חתימה</div>' +
+      '<div class="sign-area">' +
+      '<label>אני מאשר/ת את פרטי האיפיון המפורטים לעיל ומצהיר/ה שהם נכונים</label>' +
+      '<canvas id="sig-canvas" height="160"></canvas>' +
+      '<div class="sign-controls">' +
+      '<button class="btn btn-clear" onclick="clearCanvas()">🗑 נקה</button>' +
+      '<button class="btn btn-submit" id="btn-submit" onclick="submitSignature(\'' + sub.id + '\')">✅ אישור וחתימה</button>' +
+      '</div>' +
+      '</div></div>';
+  } else {
+    html += '<div class="card">' +
+      '<div class="card-header">✍️ חתימה</div>' +
+      '<div style="padding:16px 20px">' +
+      '<img src="' + sub.signature + '" style="max-width:300px;border-radius:8px;border:1px solid #e5e8f0">' +
+      '</div></div>';
+  }
+
+  container.innerHTML = html;
+
+  if (!alreadySigned) {
+    initCanvas();
+  }
+}
+
+function initCanvas() {
+  var canvas = document.getElementById('sig-canvas');
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth;
+
+  function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    if (e.touches) {
+      return { x: (e.touches[0].clientX - rect.left) * scaleX, y: (e.touches[0].clientY - rect.top) * scaleY };
+    }
+    return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+  }
+
+  var ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#1a1a2e';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  function start(e) { e.preventDefault(); isDrawing = true; var p = getPos(e); lastX = p.x; lastY = p.y; }
+  function draw(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+    var p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    lastX = p.x; lastY = p.y;
+  }
+  function stop(e) { isDrawing = false; }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stop);
+  canvas.addEventListener('mouseleave', stop);
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', draw, {passive:false});
+  canvas.addEventListener('touchend', stop);
+}
+
+function clearCanvas() {
+  var canvas = document.getElementById('sig-canvas');
+  if (!canvas) return;
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function isCanvasEmpty() {
+  var canvas = document.getElementById('sig-canvas');
+  if (!canvas) return true;
+  var data = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+  for (var i = 3; i < data.length; i += 4) { if (data[i] > 0) return false; }
+  return true;
+}
+
+async function submitSignature(subId) {
+  if (isCanvasEmpty()) {
+    alert('נא לחתום לפני האישור');
+    return;
+  }
+  var btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = '⏳ שומר...';
+
+  var canvas = document.getElementById('sig-canvas');
+  var signatureData = canvas.toDataURL('image/png');
+  var signedAt = new Date().toISOString();
+
+  var res = await fetch(SUPABASE_URL + '/rest/v1/form_submissions?id=eq.' + subId, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json', 'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ signature: signatureData, signed_at: signedAt })
+  });
+
+  if (res.ok) {
+    document.getElementById('main-container').innerHTML =
+      '<div class="card"><div class="status">' +
+      '<div class="icon">✅</div>' +
+      '<h2>תודה! הפרטים אושרו בהצלחה</h2>' +
+      '<p>החתימה נשמרה ותועברת לצוות מחלקת הממשקים</p>' +
+      '</div></div>';
+  } else {
+    btn.disabled = false;
+    btn.textContent = '✅ אישור וחתימה';
+    alert('שגיאה בשמירה, נסה שוב');
+  }
+}
+
+function showError(msg) {
+  document.getElementById('main-container').innerHTML =
+    '<div class="card"><div class="status">' +
+    '<div class="icon">❌</div>' +
+    '<h2 style="color:#EF4444">שגיאה</h2>' +
+    '<p>' + msg + '</p>' +
+    '</div></div>';
+}
+
+loadData();
+</script>
+
+
+</body></html>

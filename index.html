@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_84.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_87.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -183,18 +183,27 @@ button,input,select{font-family:inherit}
       </div>
       <div>
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">איש קשר</div>
-        <input id="proj-contact" placeholder="שם איש קשר..." onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();document.getElementById(&#39;proj-phone&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+        <div style="position:relative;display:flex;align-items:center">
+          <input id="proj-contact" placeholder="שם איש קשר..." oninput="toggleFieldClear(&#39;proj-contact&#39;,&#39;btn-clear-contact&#39;)" onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();document.getElementById(&#39;proj-phone&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 30px 8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+          <button type="button" id="btn-clear-contact" onclick="clearFormField(&#39;proj-contact&#39;,&#39;btn-clear-contact&#39;)" style="display:none;position:absolute;left:8px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
+        </div>
       </div>
       <div>
         <div style="font-size:10px;color:#6B7EAA;margin-bottom:3px">טלפון</div>
-        <input id="proj-phone" placeholder="מספר טלפון..." onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();document.getElementById(&#39;proj-workorder&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+        <div style="position:relative;display:flex;align-items:center">
+          <input id="proj-phone" placeholder="מספר טלפון..." oninput="toggleFieldClear(&#39;proj-phone&#39;,&#39;btn-clear-phone&#39;)" onkeydown="if(event.key===&#39;Enter&#39;){event.preventDefault();document.getElementById(&#39;proj-workorder&#39;).focus();}" style="background:#0a0d1a;border:1px solid #2A3050;border-radius:8px;padding:8px 30px 8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+          <button type="button" id="btn-clear-phone" onclick="clearFormField(&#39;proj-phone&#39;,&#39;btn-clear-phone&#39;)" style="display:none;position:absolute;left:8px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
+        </div>
       </div>
     </div>
     <div style="margin-bottom:11px">
       <div style="font-size:10px;color:#EF4444;margin-bottom:3px;display:flex;align-items:center;gap:4px">
         <span>הזמנת עבודה</span><span style="background:#EF444420;color:#EF4444;border:1px solid #EF444440;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700">חובה *</span>
       </div>
-      <input id="proj-workorder" placeholder="מספר הזמנת עבודה..." style="background:#0a0d1a;border:1px solid #EF444460;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+      <div style="position:relative;display:flex;align-items:center">
+        <input id="proj-workorder" placeholder="מספר הזמנת עבודה..." oninput="toggleFieldClear(&#39;proj-workorder&#39;,&#39;btn-clear-workorder&#39;)" style="background:#0a0d1a;border:1px solid #EF444460;border-radius:8px;padding:8px 30px 8px 12px;color:#E2E8F0;font-size:13px;width:100%">
+        <button type="button" id="btn-clear-workorder" onclick="clearFormField(&#39;proj-workorder&#39;,&#39;btn-clear-workorder&#39;)" style="display:none;position:absolute;left:8px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
+      </div>
       <div id="workorder-error" style="color:#EF4444;font-size:11px;margin-top:4px;display:none">⚠️ שדה חובה — יש להזין מספר הזמנת עבודה</div>
     </div>
     <div style="display:flex;gap:9px">
@@ -261,7 +270,7 @@ let projects = [];
 let passwords = {};
 let selectedUserId = null;
 let filterStage = "all";
-let filterUser  = "all";
+let filterUser  = "";
 let filterOrg   = "";
 let filterWorkorder = "";
 let filterType  = "";
@@ -387,7 +396,7 @@ function logout() {
   currentUser = null;
   projects = [];
   filterStage = "all";
-  filterUser  = "all";
+  filterUser  = "";
   filterOrg   = "";
   filterWorkorder = "";
   filterType  = "";
@@ -517,6 +526,19 @@ var _filterAC = {
   type: { val: '', items: [] }
 };
 
+function toggleFieldClear(inputId, btnId) {
+  var val = document.getElementById(inputId).value;
+  var btn = document.getElementById(btnId);
+  if (btn) btn.style.display = val ? 'block' : 'none';
+}
+
+function clearFormField(inputId, btnId) {
+  var el = document.getElementById(inputId);
+  if (el) { el.value = ''; el.focus(); }
+  var btn = document.getElementById(btnId);
+  if (btn) btn.style.display = 'none';
+}
+
 function clearFilterField(type) {
   if (type === 'stage') {
     document.getElementById('filter-stage-input').value = '';
@@ -644,11 +666,12 @@ function clearFilters() {
 }
 function updateFilterBadge() {
   var btn = document.getElementById('filter-btn');
-  var active = [filterStageAdv, filterUser && filterUser!=="all" ? filterUser : '', filterOrg, filterWorkorder, filterType].filter(Boolean).length;
-  if(filterStage && filterStage !== "all") active++;
-  btn.textContent = active > 0 ? '🔍 סינון ('+active+')' : '🔍 סינון';
-  btn.style.borderColor = active > 0 ? '#3B82F6' : '#2A3050';
-  btn.style.color = active > 0 ? '#3B82F6' : '#A5B4FC';
+  var hasFilters = !!(filterStageAdv || filterUser || filterOrg || filterWorkorder || filterType || (filterStage && filterStage !== "all"));
+  var visible = getVisible();
+  var count = filterStage === "all" ? visible.length : visible.filter(function(p){return p.stage===filterStage;}).length;
+  btn.textContent = hasFilters ? '🔍 סינון ('+count+')': '🔍 סינון';
+  btn.style.borderColor = hasFilters ? '#3B82F6' : '#2A3050';
+  btn.style.color = hasFilters ? '#3B82F6' : '#A5B4FC';
 }
 
 function setFilter(s) { filterStage=s; renderProjects(); buildStagePills(); updateFilterBadge(); }
@@ -1115,6 +1138,9 @@ async function addProject() {
   document.getElementById("proj-contact").value="";
   document.getElementById("proj-phone").value="";
   document.getElementById("proj-workorder").value="";
+  ['btn-clear-contact','btn-clear-phone','btn-clear-workorder'].forEach(function(id){
+    var b = document.getElementById(id); if(b) b.style.display='none';
+  });
   hideForm();
   btn.textContent="➕ הוסף"; btn.disabled=false;
   renderProjects(); buildStagePills();

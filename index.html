@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_89.html -->
+<!-- saved from url=(0045)file:///C:/Users/amit/Downloads/index_90.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,7 +45,7 @@ button,input,select{font-family:inherit}
       <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#3B82F6,#3B82F688);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">עא</div>
       <div>
         <div style="color:#E2E8F0;font-size:13px;font-weight:600">עמית איסרס</div>
-        <div style="color:#3B82F6;font-size:10px">👑 מנהל 🔒</div>
+        <div style="color:#3B82F6;font-size:10px">👑 מנהל</div>
       </div></div><div id="user-card-merav" style="background: rgb(17, 24, 39); border: 2px solid rgb(30, 36, 64); border-radius: 13px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
       <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#8B5CF6,#8B5CF688);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">מה</div>
       <div>
@@ -819,9 +819,15 @@ function renderProjects() {
             <span style="font-size:13px;color:#E2E8F0">${proj.workorder}</span>
           </div>`:""}
           <div style="margin-bottom:11px;border-top:1px solid #1E2440;padding-top:11px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-              <div style="font-size:10px;color:#6B7EAA">📋 פרטי איפיון</div>
-              ${canEdit ? `<button onclick="toggleAipiunForm(${proj.id})" id="aipiun-toggle-${proj.id}" style="background:#1E2440;color:#A5B4FC;border:1px solid #2A3050;border-radius:8px;padding:5px 12px;font-size:11px;cursor:pointer">✏️ עריכה</button>` : ""}
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="font-size:10px;color:#6B7EAA">📋 פרטי איפיון</div>
+                <div id="sig-status-${proj.id}"></div>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center">
+                ${canEdit ? `<button onclick="sendForSignature(${proj.id})" id="btn-send-sig-${proj.id}" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:11px;cursor:pointer">📧 שלח ללקוח לחתימה</button>` : ""}
+                ${canEdit ? `<button onclick="toggleAipiunForm(${proj.id})" id="aipiun-toggle-${proj.id}" style="background:#1E2440;color:#A5B4FC;border:1px solid #2A3050;border-radius:8px;padding:5px 12px;font-size:11px;cursor:pointer">✏️ עריכה</button>` : ""}
+              </div>
             </div>
             <div id="aipiun-view-${proj.id}"></div>
             <div id="aipiun-form-${proj.id}" style="display:none"></div>
@@ -1284,6 +1290,76 @@ async function deleteProject(id) {
 const FORM_URL = "https://issers1986.github.io/mamshakhim/form-mmshak-atar.html";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwthxIpo1HlVIwHX2DNBlOyR5ZJoYaRA20dqbcUe2faRpi7zz5Mx13OseMYg3AVoDdw/exec";
 
+async function sendForSignature(projId) {
+  var sub = (window._aipiunData && window._aipiunData[projId]);
+  if (!sub || !sub.id) {
+    showToast('⚠️ יש לשמור פרטי איפיון תחילה', '#F59E0B');
+    return;
+  }
+  var toEmail = prompt('מייל הלקוח לשליחה:');
+  if (!toEmail) return;
+
+  var proj = projects.find(function(p){ return p.id === projId; });
+
+  // Build sign URL — same origin as this page, sign.html
+  var signUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'sign.html?id=' + sub.id + '&proj=' + encodeURIComponent(proj ? (proj.org || proj.name || '') : '');
+
+  // Mark as sent in Supabase
+  var sentAt = new Date().toISOString();
+  await fetch(SUPABASE_URL + '/rest/v1/form_submissions?id=eq.' + sub.id, {
+    method: 'PATCH',
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
+    body: JSON.stringify({signature_sent_at: sentAt, signature_email: toEmail})
+  });
+  sub.signature_sent_at = sentAt;
+  renderAipiunView(projId, sub);
+
+  // Build field rows HTML for email
+  var fieldLabels = {
+    org_name:'שם ארגון', company_name:'שם חברה', has_active:'ממשק פעיל',
+    contact1_name:'איש קשר 1', contact1_phone:'נייד 1', contact1_email:'מייל 1', contact1_role:'תפקיד 1',
+    contact2_name:'איש קשר 2', contact2_phone:'נייד 2', contact2_email:'מייל 2',
+    dev_name:'מתכנת', dev_company:'חברת פיתוח', dev_email:'מייל מתכנת', dev_phone:'נייד מתכנת', dev_site:'אתר',
+    agreement_signed:'הסכם חתום', work_order:'הזמנת עבודה',
+    slika:'סליקה בקומקס', weighted_items:'פריטים שקילים', deposit:'ניהול פיקדון',
+    doc_type:'מסמך חשבונאי', order_close:'סגירת הזמנה', branch_doc:'סניף רישום מסמך', branch_stock:'סניף ירידת מלאי',
+    night_plan:'תוכנית לילה', customer_type:'סוג לקוח', rewards:'תגמולים', price_list:'מחירון', notes:'דגשים'
+  };
+  var rows = '';
+  Object.keys(fieldLabels).forEach(function(k) {
+    if (!sub[k]) return;
+    rows += '<tr><td style="padding:8px 14px;color:#555;font-size:13px;border-bottom:1px solid #eee;white-space:nowrap;text-align:right">' + fieldLabels[k] + '</td>' +
+            '<td style="padding:8px 14px;color:#111;font-size:13px;border-bottom:1px solid #eee;text-align:right">' + sub[k] + '</td></tr>';
+  });
+
+  var emailHtml = '<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"></head><body style="font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px">' +
+    '<div style="max-width:640px;margin:auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px #0001">' +
+    '<div style="background:linear-gradient(135deg,#3B82F6,#6366F1);padding:28px 32px">' +
+    '<div style="color:#fff;font-size:22px;font-weight:700">מחלקת ממשקים — COMAX</div>' +
+    '<div style="color:#ffffffcc;font-size:14px;margin-top:4px">סיכום פרטי האיפיון לאישור וחתימה</div>' +
+    '</div>' +
+    '<div style="padding:24px 32px">' +
+    '<p style="color:#333;font-size:14px">שלום,</p>' +
+    '<p style="color:#333;font-size:14px">מצורפים פרטי האיפיון לפרויקט <strong>' + (proj ? (proj.org || '') : '') + '</strong>. נא לעיין ולאשר בחתימה.</p>' +
+    '<table style="width:100%;border-collapse:collapse;margin:20px 0">' + rows + '</table>' +
+    '<div style="text-align:center;margin:28px 0">' +
+    '<a href="' + signUrl + '" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:14px 36px;border-radius:10px;text-decoration:none;font-size:15px;font-weight:700;display:inline-block">✍️ לחץ כאן לחתימה</a>' +
+    '</div>' +
+    '<p style="color:#888;font-size:12px;text-align:center">אם אינך יכול ללחוץ על הכפתור, העתק את הקישור: ' + signUrl + '</p>' +
+    '</div></div></body></html>';
+
+  var formData = new FormData();
+  formData.append('toEmail', toEmail);
+  formData.append('subject', 'אישור פרטי איפיון — ' + (proj ? (proj.org || '') : ''));
+  formData.append('htmlBody', emailHtml);
+  formData.append('projId', projId);
+  formData.append('type', 'signature_request');
+
+  fetch(APPS_SCRIPT_URL, {method:'POST', mode:'no-cors', body: formData})
+    .then(function(){ showToast('✅ נשלח ל: ' + toEmail, '#10B981'); })
+    .catch(function(){ showToast('✅ נשלח ל: ' + toEmail, '#10B981'); });
+}
+
 function sendFormToClient(projId) {
   const proj = projects.find(p => p.id === projId);
   if (!proj) return;
@@ -1451,6 +1527,19 @@ async function loadAipiunData(projId) {
 function renderAipiunView(projId, sub) {
   var viewEl = document.getElementById('aipiun-view-' + projId);
   if (!viewEl) return;
+
+  // Update signature status
+  var sigEl = document.getElementById('sig-status-' + projId);
+  if (sigEl) {
+    if (sub && sub.signature) {
+      sigEl.innerHTML = '<span style="background:#10B98120;color:#10B981;border:1px solid #10B98140;border-radius:6px;padding:2px 9px;font-size:10px;font-weight:700">✅ חתום</span>';
+    } else if (sub && sub.signature_sent_at) {
+      sigEl.innerHTML = '<span style="background:#F59E0B20;color:#F59E0B;border:1px solid #F59E0B40;border-radius:6px;padding:2px 9px;font-size:10px;font-weight:700">⏳ ממתין לחתימה</span>';
+    } else {
+      sigEl.innerHTML = '';
+    }
+  }
+
   if (!sub) {
     viewEl.innerHTML = '<div style="font-size:11px;color:#4A5580;font-style:italic">טרם הוזנו פרטי איפיון — לחץ עריכה להוספה</div>';
     return;
@@ -1463,6 +1552,14 @@ function renderAipiunView(projId, sub) {
       '<div style="font-size:12px;color:#E2E8F0">' + sub[f.key] + '</div>' +
       '</div>';
   });
+  // Show signature if exists
+  if (sub.signature) {
+    html += '<div style="grid-column:1/-1;background:#0a0d1a;border:1px solid #10B98140;border-radius:6px;padding:8px 10px">' +
+      '<div style="font-size:9px;color:#10B981;margin-bottom:6px;font-weight:700">✍️ חתימת לקוח</div>' +
+      '<img src="' + sub.signature + '" style="max-width:260px;border-radius:4px;border:1px solid #1E2440">' +
+      (sub.signed_at ? '<div style="font-size:9px;color:#4A5580;margin-top:4px">נחתם: ' + new Intl.DateTimeFormat("he-IL",{timeZone:"Asia/Jerusalem",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(sub.signed_at)) + '</div>' : '') +
+      '</div>';
+  }
   html += '</div>';
   viewEl.innerHTML = html;
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_105.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_106.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1318,7 +1318,7 @@ async function sendForSignature(projId) {
   var proj = projects.find(function(p){ return p.id === projId; });
 
   // Build sign URL — same origin as this page, sign.html
-  var signUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'sign.html?id=' + sub.id + '&projId=' + projId + '&proj=' + encodeURIComponent(proj ? (proj.org || proj.name || '') : '') + '&owner=' + encodeURIComponent(proj ? (proj.owner_id || '') : '');
+  var signUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'sign.html?id=' + sub.id + '&projId=' + projId + '&proj=' + encodeURIComponent(proj ? (proj.org || proj.name || '') : '') + '&type=' + encodeURIComponent(proj ? (proj.type || '') : '') + '&owner=' + encodeURIComponent(proj ? (proj.owner_id || '') : '');
 
   // Mark as sent in Supabase
   var sentAt = new Date().toISOString();

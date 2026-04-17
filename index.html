@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_133.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_134.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -842,11 +842,11 @@ function renderProjects() {
         </div>
         ${open?`
         <div style="border-top:1px solid var(--border2);padding:18px 20px;background:var(--bg2)">
-          <div style="position:relative;margin-bottom:28px">
+          <div style="position:relative;margin-bottom:28px;direction:ltr">
             <div style="position:absolute;top:15px;right:16px;left:16px;height:3px;background:var(--border2);border-radius:3px;z-index:0">
               <div style="position:absolute;top:0;right:0;height:100%;border-radius:3px;background:var(--green);width:${si===0?0:(si/(STAGES.length-1))*100}%;transition:width 0.4s ease"></div>
             </div>
-            <div style="display:flex;flex-direction:row-reverse;justify-content:space-between;position:relative;z-index:1">${pipelineSteps}</div>
+            <div style="display:flex;flex-direction:row-reverse;justify-content:space-between;position:relative;z-index:1;direction:rtl">${pipelineSteps}</div>
           </div>
           <div style="margin-bottom:14px">
             ${buildNotesSection(proj, si, canEdit)}

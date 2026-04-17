@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_109.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_110.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -923,11 +923,9 @@ function buildNotesBlock(proj, stageId, canEdit) {
         <input type="text" id="note-text-${proj.id}-${stageId}" placeholder="הוסף הערה..." 
           style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 11px;color:#333;font-size:12px;width:100%"/>
       </div>
-      <div style="display:flex;gap:4px;align-items:center">
-        <input type="date" id="note-date-d-${proj.id}-${stageId}" value="${(() => { const now = new Date(); const f = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit'}); return f.format(now); })()}"
-          style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 8px;color:#333;font-size:12px;width:130px"/>
-        <input type="time" id="note-date-t-${proj.id}-${stageId}" value="${(() => { const now = new Date(); const f = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jerusalem',hour:'2-digit',minute:'2-digit',hour12:false}); return f.format(now).replace(' ','T').slice(-5); })()}"
-          style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 8px;color:#333;font-size:12px;width:80px"/>
+      <div>
+        <input type="datetime-local" id="note-date-${proj.id}-${stageId}" value="${(() => { const now = new Date(); const f = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}); return f.format(now).replace(' ','T'); })()}"
+          style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 10px;color:#333;font-size:12px;width:140px"/>
       </div>
       <button onclick="addNote(${proj.id},'${stageId}')" 
         style="background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">+ הוסף</button>
@@ -938,16 +936,9 @@ function buildNotesBlock(proj, stageId, canEdit) {
 
 async function addNote(projId, stageId) {
   const textEl = document.getElementById(`note-text-${projId}-${stageId}`);
-  const dateEl = document.getElementById(`note-date-d-${projId}-${stageId}`);
-  const timeEl = document.getElementById(`note-date-t-${projId}-${stageId}`);
+  const dateEl = document.getElementById(`note-date-${projId}-${stageId}`);
   const text = textEl ? textEl.value.trim() : "";
-  var date;
-  if (dateEl && dateEl.value) {
-    date = dateEl.value + 'T' + (timeEl && timeEl.value ? timeEl.value : '00:00');
-  } else {
-    const f = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
-    date = f.format(new Date()).replace(' ','T');
-  }
+  const date = dateEl ? dateEl.value : (() => { const f = new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jerusalem',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}); return f.format(new Date()).replace(' ','T'); })();
   if(!text) return;
   const proj = projects.find(p=>p.id===projId);
   const allNotes = JSON.parse(JSON.stringify(proj.stageNotes || {}));

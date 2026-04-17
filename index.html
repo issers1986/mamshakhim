@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_129.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_130.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -792,13 +792,13 @@ function renderProjects() {
     const canEdit = isAdmin || proj.owner_id===currentUser.id;
     const [tc,tbg,tbr] = typeColor(proj.type||"API");
 
-    const pipelineSteps = [...STAGES].reverse().map((s,i) => { i = STAGES.length-1-i; return `
+    const pipelineSteps = STAGES.map((s,i) => `
       <div id="pipeline-step-${proj.id}-${s.id}" ${i<=si?`onclick="switchNoteTab(${proj.id}, '${s.id}')"`:''} style="display:flex;flex-direction:column;align-items:center;width:52px;cursor:${i<=si?'pointer':'not-allowed'};opacity:${i<=si?'1':'0.4'}">
         <div class="step-circle" style="width:${i===si?'38px':'30px'};height:${i===si?'38px':'30px'};border-radius:50%;background:${i<=si?s.color:"var(--bg3)"};border:${i===si?'3px':'2px'} solid ${i<=si?s.color:"var(--border2)"};display:flex;align-items:center;justify-content:center;font-size:${i===si?'16px':'12px'};box-shadow:${i===si?"0 4px 12px "+s.color+"66":"none"};transition:all 0.2s">
           ${i<si?'<span style="color:#fff;font-size:14px">✓</span>':s.icon}
         </div>
         <div class="step-label" style="font-size:${i===si?'9px':'8px'};color:${i<=si?s.color:"var(--text3)"};margin-top:4px;text-align:center;font-weight:${i===si?'700':'400'}">${s.label}</div>
-      </div>`; }).join("");
+      </div>`).join("");
 
     const ownerHtml = isAdmin && owner ? `
       <div style="display:flex;align-items:center;gap:6px">
@@ -842,9 +842,9 @@ function renderProjects() {
         <div style="border-top:1px solid var(--border2);padding:18px 20px;background:var(--bg2)">
           <div style="position:relative;margin-bottom:28px">
             <div style="position:absolute;top:15px;right:16px;left:16px;height:3px;background:var(--border2);border-radius:3px;z-index:0">
-              <div style="height:100%;border-radius:3px;background:var(--green);width:${si===0?0:(si/(STAGES.length-1))*100}%;transition:width 0.4s ease;float:right"></div>
+              <div style="height:100%;border-radius:3px;background:var(--green);width:${si===0?0:(si/(STAGES.length-1))*100}%;transition:width 0.4s ease;margin-left:auto"></div>
             </div>
-            <div style="display:flex;flex-direction:row;justify-content:space-between;position:relative;z-index:1">${pipelineSteps}</div>
+            <div style="display:flex;flex-direction:row-reverse;justify-content:space-between;position:relative;z-index:1">${pipelineSteps}</div>
           </div>
           <div style="margin-bottom:14px">
             ${buildNotesSection(proj, si, canEdit)}

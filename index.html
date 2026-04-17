@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_127.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_128.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -806,13 +806,13 @@ function renderProjects() {
         <span style="font-size:11px;color:var(--gray-600);font-weight:500">${owner.name}</span>
       </div>` : "";
 
-    const ownerSelect = isAdmin ? `
+    const ownerSelect = `
       <div style="margin-bottom:11px">
         <div style="font-size:10px;color:var(--text3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">אחראי פרויקט</div>
         <select onchange="updateOwner(${proj.id},this.value)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px 12px;color:#333;font-size:13px;width:220px">
           ${USERS.map(u=>`<option value="${u.id}" ${u.id===proj.owner_id?"selected":""}>${u.name} (${u.title})</option>`).join("")}
         </select>
-      </div>` : "";
+      </div>`;
 
     const buttons = canEdit ? `
       <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)">

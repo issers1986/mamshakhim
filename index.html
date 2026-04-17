@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_111.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_112.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -976,7 +976,50 @@ async function saveNotes(projId, allNotes) {
   }
 }
 
-function toggleExpand(id) { expandedId = expandedId===id?null:id; renderProjects(); if(expandedId===id) { setTimeout(()=>loadAipiunData(id),100); } }
+function toggleExpand(id) {
+  expandedId = expandedId===id?null:id;
+  renderProjects();
+  if(expandedId===id) {
+    setTimeout(()=>loadAipiunData(id),100);
+    startSigPolling(id);
+  } else {
+    stopSigPolling();
+  }
+}
+
+var _sigPollTimer = null;
+var _sigPollId = null;
+var _sigPollLastState = null;
+
+function startSigPolling(projId) {
+  stopSigPolling();
+  _sigPollId = projId;
+  _sigPollLastState = null;
+  _sigPollTimer = setInterval(async function() {
+    if (expandedId !== _sigPollId) { stopSigPolling(); return; }
+    try {
+      var res = await fetch(SUPABASE_URL + '/rest/v1/form_submissions?project_id=eq.' + _sigPollId + '&select=signature,signed_at,signature_sent_at&order=submitted_at.desc&limit=1', {
+        headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}
+      });
+      var data = await res.json();
+      if (!Array.isArray(data) || data.length === 0) return;
+      var sub = data[0];
+      var state = (sub.signature ? 'signed' : sub.signature_sent_at ? 'sent' : 'none');
+      if (state !== _sigPollLastState) {
+        _sigPollLastState = state;
+        await loadAipiunData(_sigPollId);
+        if (state === 'signed') {
+          showToast('✅ חתימה התקבלה!', '#00A651');
+          stopSigPolling();
+        }
+      }
+    } catch(e) {}
+  }, 10000);
+}
+
+function stopSigPolling() {
+  if (_sigPollTimer) { clearInterval(_sigPollTimer); _sigPollTimer = null; }
+}
 function showForm() { document.getElementById("new-project-form").classList.remove("hidden"); }
 function hideForm() { document.getElementById("new-project-form").classList.add("hidden"); }
 

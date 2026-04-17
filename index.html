@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_125.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_126.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1049,7 +1049,28 @@ function stopSigPolling() {
   if (_sigPollTimer) { clearInterval(_sigPollTimer); _sigPollTimer = null; }
 }
 function showForm() { document.getElementById("new-project-form").classList.remove("hidden"); }
-function hideForm() { document.getElementById("new-project-form").classList.add("hidden"); }
+function hideForm() {
+  document.getElementById("new-project-form").classList.add("hidden");
+  // Reset all form fields
+  var typeEl = document.getElementById("proj-type");
+  if(typeEl){ typeEl.selectedIndex=0; typeEl.style.color="#999"; }
+  var orgEl = document.getElementById("proj-org");
+  if(orgEl){ orgEl.value=""; orgEl.dataset.touched=""; }
+  var contactEl = document.getElementById("proj-contact");
+  if(contactEl) contactEl.value="";
+  var phoneEl = document.getElementById("proj-phone");
+  if(phoneEl) phoneEl.value="";
+  var workorderEl = document.getElementById("proj-workorder");
+  if(workorderEl){ workorderEl.value=""; workorderEl.style.borderColor="#EF444460"; }
+  // Hide clear buttons
+  ["btn-clear-org","btn-clear-contact","btn-clear-phone","btn-clear-workorder"].forEach(function(id){
+    var btn=document.getElementById(id); if(btn) btn.style.display="none";
+  });
+  // Hide error messages
+  ["type-error","org-error","workorder-error"].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display="none";
+  });
+}
 
 // ── Org Autocomplete ────────────────────────────────────────────────────────
 function getOrgList() {

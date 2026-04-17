@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_124.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_125.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -215,7 +215,7 @@ button,input,select,textarea{font-family:inherit}
         <span>הזמנת עבודה</span><span style="background:#EF444420;color:#EF4444;border:1px solid #EF444440;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700">חובה *</span>
       </div>
       <div style="position:relative;display:flex;align-items:center">
-        <input id="proj-workorder" placeholder="מספר הזמנת עבודה..." oninput="toggleFieldClear(&#39;proj-workorder&#39;,&#39;btn-clear-workorder&#39;)" style="background:#F0F4F0;border:1.5px solid #EF444460;border-radius:var(--radius-sm);padding:8px 30px 8px 12px;color:#333;font-size:13px;width:100%">
+        <input id="proj-workorder" type="number" placeholder="מספר הזמנת עבודה..." oninput="this.value=this.value.replace(/[^0-9]/g,&#39;&#39;);toggleFieldClear(&#39;proj-workorder&#39;,&#39;btn-clear-workorder&#39;)" style="background:#F0F4F0;border:1.5px solid #EF444460;border-radius:var(--radius-sm);padding:8px 30px 8px 12px;color:#333;font-size:13px;width:100%">
         <button type="button" id="btn-clear-workorder" onclick="clearFormField(&#39;proj-workorder&#39;,&#39;btn-clear-workorder&#39;)" style="display:none;position:absolute;left:8px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
       </div>
       <div id="workorder-error" style="color:#EF4444;font-size:11px;margin-top:4px;display:none">⚠️ שדה חובה — יש להזין מספר הזמנת עבודה</div>

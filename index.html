@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_122.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_123.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,18 +27,19 @@ button,input,select,textarea{font-family:inherit}
 <script>
 (function() {
   var CURRENT_VER = '20260417180000';
-  var RAW_URL = 'https://raw.githubusercontent.com/issers1986/mamshakhim/main/index.html?nocache=' + Date.now();
-  fetch(RAW_URL)
-    .then(function(r) { return r.text(); })
-    .then(function(html) {
-      var m = html.match(/<!-- v(\d+) -->/);
-      if (m && m[1] !== CURRENT_VER) {
-        // Force bypass Cloudflare cache by adding nocache param
-        var sep = location.href.indexOf('?') >= 0 ? '&' : '?';
-        location.href = location.href.split('?')[0] + sep + '_v=' + m[1];
-      }
-    })
-    .catch(function() {});
+  function checkVersion() {
+    fetch('https://raw.githubusercontent.com/issers1986/mamshakhim/main/index.html?t=' + Date.now(), {cache: 'no-store'})
+      .then(function(r) { return r.text(); })
+      .then(function(html) {
+        var m = html.match(/<!-- v(\d+) -->/);
+        if (m && m[1] !== CURRENT_VER) {
+          window.location.href = window.location.href.split('?')[0] + '?v=' + m[1];
+        }
+      })
+      .catch(function() {});
+  }
+  checkVersion();
+  setInterval(checkVersion, 60000); // בדוק כל דקה
 })();
 </script>
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_130.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_131.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1440,7 +1440,7 @@ async function openLogsModal() {
     html += `<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border2);font-size:12px;align-items:center">
       <div style="color:var(--text2)">${dateStr}</div>
       <div style="color:var(--text);font-weight:600">${log.project_name||'#'+log.project_id}</div>
-      <div style="color:var(--text3);direction:rtl"><span style="color:var(--text2)">${log.old_assignee}</span> <span style="color:var(--text3)">→</span> <span style="color:var(--green);font-weight:600">${log.new_assignee}</span></div>
+      <div style="color:var(--text3)"><span style="color:var(--text2);font-size:10px">מ: </span><span style="color:var(--text2)">${log.old_assignee}</span> <span style="color:var(--text3);font-size:10px">אל: </span><span style="color:var(--green);font-weight:600">${log.new_assignee}</span></div>
       <div style="color:#8B5CF6;font-weight:500">שונה ע"י ${log.changed_by}</div>
     </div>`;
   });

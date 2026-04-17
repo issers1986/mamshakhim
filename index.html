@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_118.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_120.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -819,7 +819,7 @@ function renderProjects() {
           <div style="margin-bottom:14px">
             ${buildNotesSection(proj, si, canEdit)}
           </div>
-          ${proj.stage === 'open' ? `
+          <div id="aipiun-section-${proj.id}" style="display:${proj.stage === 'open' ? 'block' : 'none'}">
           ${proj.org||proj.contact||proj.phone ? `
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
             ${proj.org?`<div style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px"><div style="font-size:9px;color:var(--text3);margin-bottom:3px;font-weight:600;text-transform:uppercase">🏢 ארגון</div><div style="font-size:12px;color:var(--gray-800);font-weight:500">${proj.org}</div></div>`:""}
@@ -838,13 +838,14 @@ function renderProjects() {
                 <div id="sig-status-${proj.id}"></div>
               </div>
               <div style="display:flex;gap:6px;align-items:center">
-                ${canEdit ? `<button onclick="sendForSignature(${proj.id})" id="btn-send-sig-${proj.id}" style="background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:5px 14px;font-size:11px;cursor:pointer;font-weight:600">📧 שלח לחתימה</button>` : ""}
-                ${canEdit ? `<button onclick="toggleAipiunForm(${proj.id})" id="aipiun-toggle-${proj.id}" style="background:var(--bg3);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;cursor:pointer;font-weight:600">✏️ עריכה</button>` : ""}
+                ${canEdit && proj.stage === 'open' ? `<button onclick="sendForSignature(${proj.id})" id="btn-send-sig-${proj.id}" style="background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:5px 14px;font-size:11px;cursor:pointer;font-weight:600">📧 שלח לחתימה</button>` : ""}
+                ${canEdit && proj.stage === 'open' ? `<button onclick="toggleAipiunForm(${proj.id})" id="aipiun-toggle-${proj.id}" style="background:var(--bg3);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;cursor:pointer;font-weight:600">✏️ עריכה</button>` : ""}
               </div>
             </div>
             <div id="aipiun-view-${proj.id}"></div>
             <div id="aipiun-form-${proj.id}" style="display:none"></div>
-          </div>` : ""}
+          </div>
+          </div>
           ${ownerSelect}
           ${buttons}
         </div>`:""}
@@ -865,6 +866,21 @@ function switchNoteTab(projId, stageId) {
   const isAdmin = currentUser.role === 'admin';
   const canEdit = isAdmin || proj.owner_id === currentUser.id;
   const si = sIdx(proj.stage);
+
+  // Save selected tab
+  window._selectedTab = window._selectedTab || {};
+  window._selectedTab[projId] = stageId;
+
+  // Show/hide aipiun section based on selected tab
+  const aipiunSection = document.getElementById(`aipiun-section-${projId}`);
+  if (aipiunSection) {
+    if (stageId === 'open') {
+      aipiunSection.style.display = 'block';
+      setTimeout(() => loadAipiunData(projId), 50);
+    } else {
+      aipiunSection.style.display = 'none';
+    }
+  }
 
   // Highlight selected pipeline step
   STAGES.forEach((s, i) => {

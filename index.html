@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_120.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_121.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -763,7 +763,7 @@ function renderProjects() {
     const [tc,tbg,tbr] = typeColor(proj.type||"API");
 
     const pipelineSteps = STAGES.map((s,i) => `
-      <div id="pipeline-step-${proj.id}-${s.id}" onclick="switchNoteTab(${proj.id}, '${s.id}')" style="display:flex;flex-direction:column;align-items:center;width:52px;cursor:${i<=si?'pointer':'default'}">
+      <div id="pipeline-step-${proj.id}-${s.id}" ${i<=si?`onclick="switchNoteTab(${proj.id}, '${s.id}')"`:''} style="display:flex;flex-direction:column;align-items:center;width:52px;cursor:${i<=si?'pointer':'not-allowed'};opacity:${i<=si?'1':'0.4'}">
         <div class="step-circle" style="width:${i===si?'38px':'30px'};height:${i===si?'38px':'30px'};border-radius:50%;background:${i<=si?s.color:"var(--bg3)"};border:${i===si?'3px':'2px'} solid ${i<=si?s.color:"var(--border2)"};display:flex;align-items:center;justify-content:center;font-size:${i===si?'16px':'12px'};box-shadow:${i===si?"0 4px 12px "+s.color+"66":"none"};transition:all 0.2s">
           ${i<si?'<span style="color:#fff;font-size:14px">✓</span>':s.icon}
         </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_140.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_141.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1467,6 +1467,11 @@ const FORM_URL = "https://issers1986.github.io/mamshakhim/form-mmshak-atar.html"
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVxBEzK8fCSBcV_qb32l4qgYR5SWL5me_F6H52tmcp1xFPb6uRjcsssa5cLxAyPHYU/exec";
 
 async function sendForSignature(projId) {
+  if (window._sendingSig) return;
+  window._sendingSig = true;
+  var btn = document.getElementById('btn-send-sig-'+projId);
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ שולח...'; }
+  try {
   // Auto-load if not already loaded
   if (!window._aipiunData || !window._aipiunData[projId]) {
     showToast('⏳ טוען נתונים...', '#3B82F6');
@@ -1530,8 +1535,8 @@ async function sendForSignature(projId) {
   formData.append('projName', orgName);
 
   fetch(APPS_SCRIPT_URL, {method:'POST', mode:'no-cors', body: formData})
-    .then(function(){ showToast('✅ נשלח ל: ' + toEmail, '#10B981'); })
-    .catch(function(){ showToast('✅ נשלח ל: ' + toEmail, '#10B981'); });
+    .then(function(){ showToast('✅ נשלח ל: ' + toEmail, '#10B981'); window._sendingSig = false; })
+    .catch(function(){ showToast('✅ נשלח ל: ' + toEmail, '#10B981'); window._sendingSig = false; });
 }
 
 function sendFormToClient(projId) {

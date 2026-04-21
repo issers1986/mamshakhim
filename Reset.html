@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)file:///C:/Users/amit/Downloads/reset.html -->
+<html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>איפוס סיסמה — בקרת פרויקטים</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;background:linear-gradient(135deg,#0D2818,#122D1C);min-height:100vh;display:flex;align-items:center;justify-content:center;color:#fff}
+.card{background:#1A3D28;border:1px solid #00A65130;border-radius:16px;padding:36px 40px;width:420px;max-width:94vw;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.logo{text-align:center;margin-bottom:28px}
+.logo-icon{width:56px;height:56px;background:#00A651;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px}
+h1{font-size:22px;font-weight:700;color:#fff;text-align:center}
+p{font-size:13px;color:#7DA88A;text-align:center;margin-top:6px}
+.form-group{margin-top:20px}
+label{font-size:12px;color:#7DA88A;font-weight:600;display:block;margin-bottom:6px}
+input[type=password]{width:100%;padding:12px 16px;border-radius:8px;border:1px solid #00A65140;background:#F0F4F0;color:#333;font-size:15px;outline:none;font-family:inherit}
+input[type=password]:focus{border-color:#00A651}
+button{width:100%;padding:13px;border-radius:8px;border:none;background:#00A651;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;font-family:inherit}
+button:hover{background:#007A3D}
+button:disabled{background:#555;cursor:not-allowed}
+.error{color:#EF4444;font-size:12px;margin-top:8px;text-align:center}
+.success{background:#00A65115;border:1px solid #00A65140;border-radius:8px;padding:16px;text-align:center;margin-top:16px}
+.success p{color:#00A651;font-size:15px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">🔑</div>
+    <h1>איפוס סיסמה</h1>
+    <p>בקרת פרויקטים — מחלקת ממשקים</p>
+  </div>
+  <div id="form-area"><p style="color:#EF4444;text-align:center;margin-top:16px">קישור לא תקין.</p></div>
+  <div id="success-area" class="success" style="display:none">
+    <p>✅ הסיסמה עודכנה בהצלחה!</p>
+    <p style="color:#7DA88A;font-size:13px;margin-top:8px">ניתן לסגור דף זה ולהתחבר עם הסיסמה החדשה.</p>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://gxhwzhxuydjlfdhpzwap.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4aHd6aHh1eWRqbGZkaHB6d2FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1ODM1NDcsImV4cCI6MjA5MTE1OTU0N30.Rnasvuv8463sE8GVnon_iQK5FI3cwoKaaL7gN1RSqow";
+
+const params = new URLSearchParams(location.search);
+const uid = params.get('uid');
+const token = params.get('token');
+
+if (!uid || !token) {
+  document.getElementById('form-area').innerHTML = '<p style="color:#EF4444;text-align:center;margin-top:16px">קישור לא תקין.</p>';
+}
+
+async function doReset() {
+  const pw1 = document.getElementById('pw1').value.trim();
+  const pw2 = document.getElementById('pw2').value.trim();
+  const err = document.getElementById('error');
+  const btn = document.getElementById('submit-btn');
+
+  if (pw1.length < 4) { err.textContent = 'הסיסמה חייבת להכיל לפחות 4 תווים'; err.style.display='block'; return; }
+  if (pw1 !== pw2) { err.textContent = 'הסיסמאות אינן תואמות'; err.style.display='block'; return; }
+  err.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'שומר...';
+
+  // Verify token and update password
+  const res = await fetch(SUPABASE_URL + '/rest/v1/users?id=eq.' + uid + '&reset_token=eq.' + token, {
+    method: 'PATCH',
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+    body: JSON.stringify({password: pw1, reset_token: null})
+  });
+
+  const data = await res.json();
+  if (!res.ok || !data || data.length === 0) {
+    err.textContent = 'הקישור פג תוקף או אינו תקין. בקש קישור חדש.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'שמור סיסמה חדשה';
+    return;
+  }
+
+  document.getElementById('form-area').style.display = 'none';
+  document.getElementById('success-area').style.display = 'block';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doReset();
+});
+</script>
+
+
+</body></html>

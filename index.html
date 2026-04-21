@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_161.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_173.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -786,13 +786,18 @@ function renderProjects() {
     return;
   }
 
-  const headerRow = `<div style="display:flex;align-items:center;gap:12px;padding:10px 18px;margin-bottom:4px">
-    <div style="width:160px;flex-shrink:0;text-align:center;font-size:13px;color:#fff;font-weight:700;letter-spacing:0.5px"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">סטטוס</span></div>
+  const headerRow = `<div style="display:flex;align-items:center;gap:0;padding:10px 18px;margin-bottom:4px;border-bottom:1px solid var(--border2)">
+    <div style="width:160px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">סטטוס</span></div>
     <div style="width:2px;flex-shrink:0"></div>
-    <div style="flex:1;min-width:0;display:flex;align-items:center">
-      <div style="width:220px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700;letter-spacing:0.5px"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">שם ארגון</span></div>
-      <div style="width:140px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700;letter-spacing:0.5px"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">מספר הזמנה</span></div>
-    </div>
+    <div style="width:200px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">שם ארגון</span></div>
+    <div style="width:2px;flex-shrink:0"></div>
+    <div style="width:130px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">מספר הזמנה</span></div>
+    <div style="width:2px;flex-shrink:0"></div>
+    <div style="width:120px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">סוג ממשק</span></div>
+    <div style="width:2px;flex-shrink:0"></div>
+    <div style="width:140px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">תאריך פתיחה</span></div>
+    <div style="width:2px;flex-shrink:0"></div>
+    <div style="flex:1;padding:0 16px;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">משתמש</span></div>
   </div>`;
   list.innerHTML = headerRow + filtered.map(proj => {
     const stage = STAGES.find(s=>s.id===proj.stage)||STAGES[0];
@@ -836,18 +841,30 @@ function renderProjects() {
 
     return `
       <div style="background:var(--card);border:1px solid ${open?"var(--green)":"var(--border2)"};border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);${open?"border-right:3px solid var(--green)":""}">
-        <div onclick="toggleExpand(${proj.id})" style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:${open?"var(--bg3)":"var(--card)"}">
-          <div style="width:160px;flex-shrink:0;padding:0 16px;text-align:center"><div style="background:${stage.color}15;border:1.5px solid ${stage.color}50;border-radius:20px;padding:4px 10px;font-size:11px;color:${stage.color};font-weight:800;white-space:nowrap;display:inline-block;max-width:100%;text-align:center">${stage.icon} ${stage.label}</div></div>
-          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
-          <div style="flex:1;min-width:0">
-            <div style="display:flex;align-items:stretch;gap:0;flex-wrap:wrap">
-              ${proj.org?`<div style="width:220px;flex-shrink:0;padding:0 16px;border-left:2px solid rgba(255,255,255,0.6);text-align:center"><div style="font-size:15px;font-weight:700;color:var(--gray-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${proj.org}</div></div>`:""}
-              ${proj.workorder?`<div style="width:140px;flex-shrink:0;padding:0 16px;border-left:2px solid rgba(255,255,255,0.6);text-align:center"><div style="font-size:15px;font-weight:700;color:var(--gray-900)">${proj.workorder}</div></div>`:""}
-            </div>
+        <div onclick="toggleExpand(${proj.id})" style="display:flex;align-items:center;gap:0;padding:14px 18px;cursor:pointer;background:${open?"var(--bg3)":"var(--card)"}">
+          <div style="width:160px;flex-shrink:0;padding:0 16px;text-align:center">
+            <div style="background:${stage.color}15;border:1.5px solid ${stage.color}50;border-radius:20px;padding:4px 10px;font-size:11px;color:${stage.color};font-weight:800;white-space:nowrap;display:inline-block">${stage.icon} ${stage.label}</div>
           </div>
-          <span style="background:${tbg};color:${tc};border:1px solid ${tbr};border-radius:var(--radius-sm);padding:4px 10px;font-size:11px;font-weight:700">${proj.type||"API"}</span>
-          ${ownerHtml}
-          <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:${open?"rotate(180deg)":"none"}">▼</span>
+          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
+          <div style="width:200px;flex-shrink:0;padding:0 16px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+            <div style="font-size:15px;font-weight:700;color:var(--gray-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${proj.org||'—'}</div>
+          </div>
+          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
+          <div style="width:130px;flex-shrink:0;padding:0 16px;text-align:center">
+            <div style="font-size:15px;font-weight:700;color:var(--gray-900)">${proj.workorder||'—'}</div>
+          </div>
+          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
+          <div style="width:120px;flex-shrink:0;padding:0 8px;text-align:center;display:flex;align-items:center;justify-content:center">
+            <span style="background:${tbg};color:${tc};border:1px solid ${tbr};border-radius:var(--radius-sm);padding:3px 7px;font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;text-align:center">${proj.type||"API"}</span>
+          </div>
+          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
+          <div style="width:140px;flex-shrink:0;padding:0 16px;text-align:center">
+            <div style="font-size:13px;color:#fff;font-weight:800">${proj.created ? new Date(proj.created).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—'}</div>
+          </div>
+          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
+          <div style="flex:1;padding:0 12px;display:flex;align-items:center;gap:8px">${ownerHtml}
+            <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:${open?"rotate(180deg)":"none"};margin-right:auto">▼</span>
+          </div>
         </div>
         ${open?`
         <div style="border-top:1px solid var(--border2);padding:18px 20px;background:var(--bg2)">

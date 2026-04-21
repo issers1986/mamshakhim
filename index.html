@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_173.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_182.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -116,7 +116,7 @@ button,input,select,textarea{font-family:inherit}
   <div id="stage-pills" style="display:none"></div>
   <div style="padding:12px 24px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
     <div id="advanced-filter-bar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:1"></div>
-    <button onclick="toggleFilterPanel()" id="filter-btn" style="background:var(--card);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 16px;font-size:12px;cursor:pointer;white-space:nowrap;font-weight:600">🔍 סינון</button>
+    <button onmousedown="event.preventDefault();toggleFilterPanel()" id="filter-btn" style="background:var(--card);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 16px;font-size:12px;cursor:pointer;white-space:nowrap;font-weight:600">🔍 סינון</button>
   </div>
   <div id="filter-panel" style="display:none;margin:8px 24px 0;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);padding:16px">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:12px">
@@ -125,7 +125,7 @@ button,input,select,textarea{font-family:inherit}
         <div style="position:relative;display:flex;align-items:center">
           <input id="filter-stage-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;stage&#39;,this.value);updateClearBtn(&#39;stage&#39;)" onkeydown="filterACKey(event,&#39;stage&#39;)" onfocus="filterAC(&#39;stage&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;stage&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
           <button type="button" id="clear-stage" onmousedown="event.preventDefault();clearFilterField(&#39;stage&#39;)" title="נקה" style="display:none;position:absolute;left:22px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
-          <button type="button" onmousedown="event.preventDefault();filterAC(&#39;stage&#39;,document.getElementById(&#39;filter-stage-input&#39;).value)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
+          <button type="button" onmousedown="event.preventDefault();toggleFilterAC(&#39;stage&#39;)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
         </div>
         <div id="filter-stage-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
       </div>
@@ -134,7 +134,7 @@ button,input,select,textarea{font-family:inherit}
         <div style="position:relative;display:flex;align-items:center">
           <input id="filter-user-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;user&#39;,this.value);updateClearBtn(&#39;user&#39;)" onkeydown="filterACKey(event,&#39;user&#39;)" onfocus="filterAC(&#39;user&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;user&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
           <button type="button" id="clear-user" onmousedown="event.preventDefault();clearFilterField(&#39;user&#39;)" title="נקה" style="display:none;position:absolute;left:22px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
-          <button type="button" onmousedown="event.preventDefault();filterAC(&#39;user&#39;,document.getElementById(&#39;filter-user-input&#39;).value)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
+          <button type="button" onmousedown="event.preventDefault();toggleFilterAC(&#39;user&#39;)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
         </div>
         <div id="filter-user-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
       </div>
@@ -143,7 +143,7 @@ button,input,select,textarea{font-family:inherit}
         <div style="position:relative;display:flex;align-items:center">
           <input id="filter-org-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;org&#39;,this.value);updateClearBtn(&#39;org&#39;)" onkeydown="filterACKey(event,&#39;org&#39;)" onfocus="filterAC(&#39;org&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;org&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
           <button type="button" id="clear-org" onmousedown="event.preventDefault();clearFilterField(&#39;org&#39;)" title="נקה" style="display:none;position:absolute;left:22px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
-          <button type="button" onmousedown="event.preventDefault();filterAC(&#39;org&#39;,document.getElementById(&#39;filter-org-input&#39;).value)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
+          <button type="button" onmousedown="event.preventDefault();toggleFilterAC(&#39;org&#39;)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
         </div>
         <div id="filter-org-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
       </div>
@@ -159,7 +159,7 @@ button,input,select,textarea{font-family:inherit}
         <div style="position:relative;display:flex;align-items:center">
           <input id="filter-type-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;type&#39;,this.value);updateClearBtn(&#39;type&#39;)" onkeydown="filterACKey(event,&#39;type&#39;)" onfocus="filterAC(&#39;type&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;type&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
           <button type="button" id="clear-type" onmousedown="event.preventDefault();clearFilterField(&#39;type&#39;)" title="נקה" style="display:none;position:absolute;left:22px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
-          <button type="button" onmousedown="event.preventDefault();filterAC(&#39;type&#39;,document.getElementById(&#39;filter-type-input&#39;).value)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
+          <button type="button" onmousedown="event.preventDefault();toggleFilterAC(&#39;type&#39;)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
         </div>
         <div id="filter-type-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
       </div>
@@ -625,7 +625,26 @@ function updateClearBtn(type) {
   if (btn) btn.style.display = val ? 'block' : 'none';
 }
 
+document.addEventListener('click', function(e) {
+  var panel = document.getElementById('filter-panel');
+  var btn = document.getElementById('filter-btn');
+  if (!panel || panel.style.display === 'none') return;
+  if (!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+    panel.style.display = 'none';
+    btn.style.background = 'var(--card)';
+    btn.style.color = 'var(--text2)';
+    ['stage','user','org','type'].forEach(function(t){
+      var dd = document.getElementById('filter-'+t+'-dd');
+      if (dd) dd.style.display = 'none';
+    });
+  }
+});
+
 function toggleFilterPanel() {
+  ['stage','user','org','type'].forEach(function(t){
+    var dd = document.getElementById('filter-'+t+'-dd');
+    if (dd) dd.style.display = 'none';
+  });
   var panel = document.getElementById('filter-panel');
   var btn = document.getElementById('filter-btn');
   if (panel.style.display === 'none') {
@@ -657,6 +676,21 @@ function toggleFilterPanel() {
     panel.style.display = 'none';
     btn.style.background = 'var(--card)';
     btn.style.color = 'var(--text2)';
+    ['stage','user','org','type'].forEach(function(t){
+      var dd = document.getElementById('filter-'+t+'-dd');
+      if (dd) dd.style.display = 'none';
+    });
+  }
+}
+
+function toggleFilterAC(type) {
+  var dd = document.getElementById('filter-'+type+'-dd');
+  if (dd && dd.style.display === 'block') {
+    dd.style.display = 'none';
+  } else {
+    var input = document.getElementById('filter-'+type+'-input');
+    filterAC(type, input ? input.value : '');
+    if (input) input.focus();
   }
 }
 
@@ -787,17 +821,17 @@ function renderProjects() {
   }
 
   const headerRow = `<div style="display:flex;align-items:center;gap:0;padding:10px 18px;margin-bottom:4px;border-bottom:1px solid var(--border2)">
+    <div style="width:160px;flex-shrink:0;padding:0 16px;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">משתמש</span></div>
+    <div style="width:2px;flex-shrink:0"></div>
     <div style="width:160px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">סטטוס</span></div>
+    <div style="width:2px;flex-shrink:0"></div>
+    <div style="width:120px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">סוג ממשק</span></div>
+    <div style="width:2px;flex-shrink:0"></div>
+    <div style="width:140px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700;white-space:nowrap"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">תאריך פתיחה</span></div>
     <div style="width:2px;flex-shrink:0"></div>
     <div style="width:200px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">שם ארגון</span></div>
     <div style="width:2px;flex-shrink:0"></div>
     <div style="width:130px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">מספר הזמנה</span></div>
-    <div style="width:2px;flex-shrink:0"></div>
-    <div style="width:120px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">סוג ממשק</span></div>
-    <div style="width:2px;flex-shrink:0"></div>
-    <div style="width:140px;flex-shrink:0;padding:0 16px;text-align:center;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">תאריך פתיחה</span></div>
-    <div style="width:2px;flex-shrink:0"></div>
-    <div style="flex:1;padding:0 16px;font-size:13px;color:#fff;font-weight:700"><span style="border-bottom:2px solid rgba(255,255,255,0.7);padding-bottom:3px;padding-right:8px;padding-left:8px">משתמש</span></div>
   </div>`;
   list.innerHTML = headerRow + filtered.map(proj => {
     const stage = STAGES.find(s=>s.id===proj.stage)||STAGES[0];
@@ -842,28 +876,29 @@ function renderProjects() {
     return `
       <div style="background:var(--card);border:1px solid ${open?"var(--green)":"var(--border2)"};border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow-sm);${open?"border-right:3px solid var(--green)":""}">
         <div onclick="toggleExpand(${proj.id})" style="display:flex;align-items:center;gap:0;padding:14px 18px;cursor:pointer;background:${open?"var(--bg3)":"var(--card)"}">
+          <div style="width:160px;flex-shrink:0;padding:0 12px;display:flex;align-items:center;gap:8px">
+            <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:${open?"rotate(180deg)":"none"}">▼</span>
+            ${ownerHtml}
+          </div>
+          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
           <div style="width:160px;flex-shrink:0;padding:0 16px;text-align:center">
             <div style="background:${stage.color}15;border:1.5px solid ${stage.color}50;border-radius:20px;padding:4px 10px;font-size:11px;color:${stage.color};font-weight:800;white-space:nowrap;display:inline-block">${stage.icon} ${stage.label}</div>
           </div>
           <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
-          <div style="width:200px;flex-shrink:0;padding:0 16px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+          <div style="width:120px;flex-shrink:0;padding:0 8px;text-align:center;display:flex;align-items:center;justify-content:center">
+            <span style="background:${tbg};color:${tc};border:1px solid ${tbr};border-radius:var(--radius-sm);padding:3px 7px;font-size:10px;font-weight:700;white-space:nowrap;display:block;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%">${proj.type||"API"}</span>
+          </div>
+          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
+          <div style="width:130px;flex-shrink:0;padding:0 16px;text-align:center">
+            <div style="font-size:13px;color:var(--text2);font-weight:700">${proj.created ? new Date(proj.created).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—'}</div>
+          </div>
+          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
+          <div style="width:200px;flex-shrink:0;padding:0 16px;text-align:center;overflow:hidden">
             <div style="font-size:15px;font-weight:700;color:var(--gray-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${proj.org||'—'}</div>
           </div>
           <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
           <div style="width:130px;flex-shrink:0;padding:0 16px;text-align:center">
             <div style="font-size:15px;font-weight:700;color:var(--gray-900)">${proj.workorder||'—'}</div>
-          </div>
-          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
-          <div style="width:120px;flex-shrink:0;padding:0 8px;text-align:center;display:flex;align-items:center;justify-content:center">
-            <span style="background:${tbg};color:${tc};border:1px solid ${tbr};border-radius:var(--radius-sm);padding:3px 7px;font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;text-align:center">${proj.type||"API"}</span>
-          </div>
-          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
-          <div style="width:140px;flex-shrink:0;padding:0 16px;text-align:center">
-            <div style="font-size:13px;color:#fff;font-weight:800">${proj.created ? new Date(proj.created).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—'}</div>
-          </div>
-          <div style="width:2px;height:36px;background:rgba(255,255,255,0.6);border-radius:2px;flex-shrink:0"></div>
-          <div style="flex:1;padding:0 12px;display:flex;align-items:center;gap:8px">${ownerHtml}
-            <span style="color:var(--text3);font-size:11px;transition:transform 0.2s;display:block;transform:${open?"rotate(180deg)":"none"};margin-right:auto">▼</span>
           </div>
         </div>
         ${open?`

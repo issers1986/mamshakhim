@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_188.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_189.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -450,6 +450,15 @@ function logout() {
   document.getElementById("login-screen").classList.remove("hidden");
   selectedUserId = null;
   buildLogin();
+  // Reset password field and button
+  var pwDiv = document.getElementById("password-div");
+  var pwInput = document.getElementById("password-input");
+  var pwErr = document.getElementById("password-error");
+  var btn = document.getElementById("login-btn");
+  if (pwDiv) pwDiv.classList.add("hidden");
+  if (pwInput) pwInput.value = "";
+  if (pwErr) pwErr.style.display = "none";
+  if (btn) { btn.style.background="var(--bg3)"; btn.style.color="var(--text3)"; btn.style.cursor="not-allowed"; btn.textContent="בחר/י משתמש"; }
 }
 
 async function loadProjects() {

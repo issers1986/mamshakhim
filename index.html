@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_189.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_190.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,6 +86,7 @@ button,input,select,textarea{font-family:inherit}
       <div id="password-div" class="hidden" style="margin-bottom:14px">
         <input id="password-input" type="password" autocomplete="off" placeholder="הכנס סיסמה..." onkeydown="if(event.key===&#39;Enter&#39;)doLogin()" style="width:100%;padding:12px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:#F0F4F0;color:#333;font-size:15px;outline:none;text-align:right">
         <div id="password-error" style="color:#DC3545;font-size:12px;margin-top:6px;text-align:center;display:none"></div>
+        <div style="text-align:center;margin-top:8px"><button type="button" onclick="resetPassword()" style="background:transparent;border:none;color:#6B7EAA;font-size:12px;cursor:pointer;text-decoration:underline">שכחתי סיסמה</button></div>
       </div>
       <button onclick="doLogin()" id="login-btn" style="width:100%;padding:13px;border-radius:var(--radius-sm);border:none;background:var(--bg3);color:var(--text3);font-size:15px;font-weight:700;cursor:not-allowed">
         בחר/י משתמש
@@ -363,6 +364,35 @@ async function loadPasswords() {
   } catch(e) {
     console.warn("loadPasswords failed:", e);
   }
+}
+
+async function resetPassword() {
+  if (!selectedUserId) return;
+  const u = getUser(selectedUserId);
+  if (!confirm('לשלוח איפוס סיסמה למייל של ' + u.name + '?')) return;
+  // Generate random 6-char password
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+  let newPw = '';
+  for (let i = 0; i < 6; i++) newPw += chars[Math.floor(Math.random() * chars.length)];
+  
+  // Save new password to Supabase
+  const res = await fetch(SUPABASE_URL + '/rest/v1/users?id=eq.' + selectedUserId, {
+    method: 'PATCH',
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
+    body: JSON.stringify({password: newPw})
+  });
+  
+  if (!res.ok) { alert('שגיאה בשמירת הסיסמה'); return; }
+  passwords[selectedUserId] = newPw;
+  
+  // Send email via Apps Script
+  const fd = new FormData();
+  fd.append('type', 'reset_password');
+  fd.append('userId', selectedUserId);
+  fd.append('newPassword', newPw);
+  fetch(APPS_SCRIPT_URL, {method:'POST', mode:'no-cors', body: fd});
+  
+  alert('✅ הסיסמה החדשה נשלחה למייל של ' + u.name);
 }
 
 function buildLogin() {

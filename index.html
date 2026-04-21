@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_198.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_200.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1580,8 +1580,7 @@ async function resetPassword() {
   if (!res.ok) { alert('שגיאה בשמירת הסיסמה'); return; }
   passwords[selectedUserId] = newPw;
   // Open WhatsApp with message
-  const msg = encodeURIComponent('שלום ' + u.name + ', הסיסמה הזמנית שלך למערכת בקרת הפרויקטים היא: *' + newPw + '*
-מומלץ לשנות אחרי הכניסה.');
+  const msg = encodeURIComponent('שלום ' + u.name + ', הסיסמה הזמנית שלך למערכת בקרת הפרויקטים היא: *' + newPw + '*%0Aמומלץ לשנות אחרי הכניסה.');
   window.open('https://wa.me/' + phone + '?text=' + msg, '_blank');
 }
 

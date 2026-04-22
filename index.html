@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_201.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_202.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,7 +86,7 @@ button,input,select,textarea{font-family:inherit}
       <div id="password-div" class="hidden" style="margin-bottom:14px">
         <input id="password-input" type="password" autocomplete="off" placeholder="הכנס סיסמה..." onkeydown="if(event.key===&#39;Enter&#39;)doLogin()" style="width:100%;padding:12px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:#F0F4F0;color:#333;font-size:15px;outline:none;text-align:right">
         <div id="password-error" style="color:#DC3545;font-size:12px;margin-top:6px;text-align:center;display:none"></div>
-        <div style="text-align:center;margin-top:8px"><button type="button" onclick="resetPassword()" style="background:transparent;border:none;color:#6B7EAA;font-size:12px;cursor:pointer;text-decoration:underline">שכחתי סיסמה</button></div>
+        <div id="forgot-btn-div" style="text-align:center;margin-top:8px;display:none"><button type="button" onclick="resetPassword()" style="background:transparent;border:none;color:#6B7EAA;font-size:12px;cursor:pointer;text-decoration:underline">שכחתי סיסמה?</button></div>
       </div>
       <button onclick="doLogin()" id="login-btn" style="width:100%;padding:13px;border-radius:var(--radius-sm);border:none;background:var(--bg3);color:var(--text3);font-size:15px;font-weight:700;cursor:not-allowed">
         בחר/י משתמש
@@ -421,6 +421,9 @@ async function doLogin() {
     if(pw !== passwords[selectedUserId]) {
       const err = document.getElementById("password-error");
       err.textContent = "סיסמה שגויה, נסה שוב";
+      err.style.display = "block";
+      var forgotBtn = document.getElementById("forgot-btn-div");
+      if (forgotBtn) forgotBtn.style.display = "block";
       err.style.display = "block";
       return;
     }
@@ -1551,37 +1554,85 @@ async function deleteProject(id) {
 
 // ===== FORM SUBMISSION =====
 const FORM_URL = "https://issers1986.github.io/mamshakhim/form-mmshak-atar.html";
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUPfJIaO71W7FxHakpRHG5ftZcAGrs3VtM6_Nm52Buo2ac0v6T3uKibBvcYMtt3Vj3/exec";
-
-const USER_PHONES = {
-  amit:   '972505629754',
-  merav:  '',
-  shir:   '',
-  elad:   '',
-  michal: '',
-  tamar:  ''
-};
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNiHphfcvG_CwA3Bn6hPU61Nf6aetvcb1RmuTPMGNDjXXuoWuoqqoQ_-bJCJZUW06l/exec";
 
 async function resetPassword() {
   if (!selectedUserId) return;
   const u = getUser(selectedUserId);
-  const phone = USER_PHONES[selectedUserId];
-  if (!phone) { alert('אין מספר טלפון עבור ' + u.name + '. יש להוסיף מספר בקוד.'); return; }
-  // Generate temp password
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-  let newPw = '';
-  for (let i = 0; i < 6; i++) newPw += chars[Math.floor(Math.random() * chars.length)];
-  // Save to Supabase
+  // Generate 6-digit code
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  // Save code to Supabase
   const res = await fetch(SUPABASE_URL + '/rest/v1/users?id=eq.' + selectedUserId, {
     method: 'PATCH',
     headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
-    body: JSON.stringify({password: newPw})
+    body: JSON.stringify({reset_token: code})
   });
-  if (!res.ok) { alert('שגיאה בשמירת הסיסמה'); return; }
+  if (!res.ok) { alert('שגיאה'); return; }
+  // Get user email
+  const userEmailForReset = (await (await fetch(SUPABASE_URL+'/rest/v1/users?id=eq.'+selectedUserId+'&select=email',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}})).json())[0]?.email || '';
+  // Send code by email
+  const fd = new FormData();
+  fd.append('type', 'reset_password');
+  fd.append('userId', selectedUserId);
+  fd.append('userName', u.name);
+  fd.append('userEmail', userEmailForReset);
+  fd.append('code', code);
+  fetch(APPS_SCRIPT_URL, {method:'POST', mode:'no-cors', body: fd});
+  // Show code input
+  showCodeInput();
+}
+
+function showCodeInput() {
+  var pwDiv = document.getElementById('password-div');
+  if (!pwDiv) return;
+  var existing = document.getElementById('code-div');
+  if (existing) existing.remove();
+  pwDiv.insertAdjacentHTML('afterend',
+    '<div id="code-div" style="margin-bottom:14px">' +
+    '<div style="font-size:12px;color:#7DA88A;text-align:center;margin-bottom:8px">קוד נשלח למייל שלך. הכנס אותו כאן:</div>' +
+    '<input id="code-input" type="text" maxlength="6" placeholder="קוד 6 ספרות..." style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid #00A65140;background:#F0F4F0;color:#333;font-size:18px;outline:none;text-align:center;letter-spacing:8px" onkeydown="if(event.key===\'Enter\')verifyCode()">' +
+    '<div style="display:flex;gap:8px;margin-top:8px">' +
+    '<button onclick="verifyCode()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#00A651;color:#fff;font-size:13px;font-weight:700;cursor:pointer">אמת קוד</button>' +
+    '<button onclick="document.getElementById(\'code-div\').remove()" style="padding:10px 14px;border-radius:8px;border:1px solid #ccc;background:transparent;color:#666;font-size:13px;cursor:pointer">ביטול</button>' +
+    '</div>' +
+    '<div id="code-error" style="color:#EF4444;font-size:12px;margin-top:6px;text-align:center;display:none"></div>' +
+    '</div>');
+  document.getElementById('code-input').focus();
+}
+
+async function verifyCode() {
+  const code = document.getElementById('code-input')?.value?.trim();
+  const errEl = document.getElementById('code-error');
+  if (!code || code.length < 6) { if(errEl){errEl.textContent='הכנס קוד 6 ספרות';errEl.style.display='block';} return; }
+  const res = await fetch(SUPABASE_URL + '/rest/v1/users?id=eq.' + selectedUserId + '&reset_token=eq.' + code, {
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY}
+  });
+  const data = await res.json();
+  if (!data || data.length === 0) {
+    if (errEl) { errEl.textContent = 'קוד שגוי, נסה שוב'; errEl.style.display = 'block'; }
+    return;
+  }
+  document.getElementById('code-div').innerHTML =
+    '<div style="font-size:12px;color:#7DA88A;text-align:center;margin-bottom:8px">קוד אומת! בחר סיסמה חדשה:</div>' +
+    '<input id="new-pw-input" type="password" placeholder="סיסמה חדשה (לפחות 4 תווים)..." style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid #00A65140;background:#F0F4F0;color:#333;font-size:15px;outline:none;text-align:right;margin-bottom:8px" onkeydown="if(event.key===\'Enter\')saveNewPassword()">' +
+    '<button onclick="saveNewPassword()" style="width:100%;padding:10px;border-radius:8px;border:none;background:#00A651;color:#fff;font-size:13px;font-weight:700;cursor:pointer">שמור סיסמה חדשה</button>' +
+    '<div id="newpw-error" style="color:#EF4444;font-size:12px;margin-top:6px;text-align:center;display:none"></div>';
+  document.getElementById('new-pw-input').focus();
+}
+
+async function saveNewPassword() {
+  const newPw = document.getElementById('new-pw-input')?.value?.trim();
+  const errEl = document.getElementById('newpw-error');
+  if (!newPw || newPw.length < 4) { if(errEl){errEl.textContent='סיסמה חייבת להכיל לפחות 4 תווים';errEl.style.display='block';} return; }
+  const res = await fetch(SUPABASE_URL + '/rest/v1/users?id=eq.' + selectedUserId, {
+    method: 'PATCH',
+    headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'},
+    body: JSON.stringify({password: newPw, reset_token: null})
+  });
+  if (!res.ok) { if(errEl){errEl.textContent='שגיאה בשמירה';errEl.style.display='block';} return; }
   passwords[selectedUserId] = newPw;
-  // Open WhatsApp with message
-  const msg = encodeURIComponent('שלום ' + u.name + ', הסיסמה הזמנית שלך למערכת בקרת הפרויקטים היא: *' + newPw + '*%0Aמומלץ לשנות אחרי הכניסה.');
-  window.open('https://wa.me/' + phone + '?text=' + msg, '_blank');
+  document.getElementById('code-div').remove();
+  alert('הסיסמה עודכנה בהצלחה! כעת ניתן להתחבר.');
 }
 
 async function sendForSignature(projId) {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_212.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_213.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,7 +57,7 @@ button,input,select,textarea{font-family:inherit}
       <div>
         <div style="color:var(--text);font-size:13px;font-weight:600">עמית איסרס</div>
         <div style="color:#3B82F6;font-size:10px">👑 מנהל 🔒</div>
-      </div></div><div id="user-card-merav" style="background: var(--card); border: 1.5px solid var(--border2); border-radius: var(--radius-md); padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
+      </div></div><div id="user-card-mirav" style="background: var(--card); border: 1.5px solid var(--border2); border-radius: var(--radius-md); padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 11px; transition: 0.18s;">
       <div style="width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#8B5CF6,#8B5CF688);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff">מה</div>
       <div>
         <div style="color:var(--text);font-size:13px;font-weight:600">מירב הזז</div>
@@ -288,7 +288,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const USERS = [
   {id:"amit",  name:"עמית איסרס",  role:"admin",   title:"מנהל",   avatar:"עא",color:"#3B82F6"},
-  {id:"merav", name:"מירב הזז",     role:"admin",   title:"מנהלת",  avatar:"מה",color:"#8B5CF6"},
+  {id:"mirav", name:"מירב הזז",     role:"admin",   title:"מנהלת",  avatar:"מה",color:"#8B5CF6"},
   {id:"shir",  name:"שיר ינאי",    role:"support", title:"תומכת",  avatar:"שי",color:"#10B981"},
   {id:"elad",  name:"אלעד יקותיאל",role:"support", title:"תומך",   avatar:"אי",color:"#F59E0B"},
   {id:"michal",name:"מיכל רפאלי",  role:"support", title:"תומכת",  avatar:"מר",color:"#EC4899"},
@@ -1558,7 +1558,7 @@ async function deleteProject(id) {
 
 // ===== FORM SUBMISSION =====
 const FORM_URL = "https://issers1986.github.io/mamshakhim/form-mmshak-atar.html";
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNiHphfcvG_CwA3Bn6hPU61Nf6aetvcb1RmuTPMGNDjXXuoWuoqqoQ_-bJCJZUW06l/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9GXt5I_qWR0Fp-w0xA5d3rADeFIkQD_HOCXbOk509qJj7XpMB7zu1QkB6gcsGSnxL/exec";
 
 let _resetUserId = null; // locked userId during reset flow
 
@@ -1616,7 +1616,7 @@ function showCodeInput() {
     '</div>');
   document.getElementById('code-input').focus();
   // Disable all user cards
-  ['amit','merav','shir','elad','michal','tamar'].forEach(function(id){var c=document.getElementById('user-card-'+id);if(!c)return; c.style.pointerEvents='none'; c.style.opacity='0.4'; });
+  ['amit','mirav','shir','elad','michal','tamar'].forEach(function(id){var c=document.getElementById('user-card-'+id);if(!c)return; c.style.pointerEvents='none'; c.style.opacity='0.4'; });
 }
 
 async function verifyCode() {
@@ -1653,7 +1653,7 @@ async function saveNewPassword() {
   if (!res.ok) { if(errEl){errEl.textContent='שגיאה בשמירה';errEl.style.display='block';} return; }
   passwords[uid] = newPw;
   _resetUserId = null;
-  ['amit','merav','shir','elad','michal','tamar'].forEach(function(id){var c=document.getElementById('user-card-'+id);if(!c)return;c.style.pointerEvents='';c.style.opacity='';});
+  ['amit','mirav','shir','elad','michal','tamar'].forEach(function(id){var c=document.getElementById('user-card-'+id);if(!c)return;c.style.pointerEvents='';c.style.opacity='';});
   document.getElementById('code-div').remove();
   var pwDiv = document.getElementById('password-div');
   if (pwDiv) pwDiv.style.display = '';

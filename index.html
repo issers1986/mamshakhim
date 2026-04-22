@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_213.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_214.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -122,6 +122,15 @@ button,input,select,textarea{font-family:inherit}
   <div id="filter-panel" style="display:none;margin:8px 24px 0;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);padding:16px">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:12px">
       <div style="position:relative">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">משתמש</div>
+        <div style="position:relative;display:flex;align-items:center">
+          <input id="filter-user-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;user&#39;,this.value);updateClearBtn(&#39;user&#39;)" onkeydown="filterACKey(event,&#39;user&#39;)" onfocus="filterAC(&#39;user&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;user&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
+          <button type="button" id="clear-user" onmousedown="event.preventDefault();clearFilterField(&#39;user&#39;)" title="נקה" style="display:none;position:absolute;left:22px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
+          <button type="button" onmousedown="event.preventDefault();toggleFilterAC(&#39;user&#39;)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
+        </div>
+        <div id="filter-user-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
+      </div>
+      <div style="position:relative">
         <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">סטטוס</div>
         <div style="position:relative;display:flex;align-items:center">
           <input id="filter-stage-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;stage&#39;,this.value);updateClearBtn(&#39;stage&#39;)" onkeydown="filterACKey(event,&#39;stage&#39;)" onfocus="filterAC(&#39;stage&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;stage&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
@@ -131,13 +140,13 @@ button,input,select,textarea{font-family:inherit}
         <div id="filter-stage-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
       </div>
       <div style="position:relative">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">עובד</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">סוג ממשק</div>
         <div style="position:relative;display:flex;align-items:center">
-          <input id="filter-user-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;user&#39;,this.value);updateClearBtn(&#39;user&#39;)" onkeydown="filterACKey(event,&#39;user&#39;)" onfocus="filterAC(&#39;user&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;user&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
-          <button type="button" id="clear-user" onmousedown="event.preventDefault();clearFilterField(&#39;user&#39;)" title="נקה" style="display:none;position:absolute;left:22px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
-          <button type="button" onmousedown="event.preventDefault();toggleFilterAC(&#39;user&#39;)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
+          <input id="filter-type-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;type&#39;,this.value);updateClearBtn(&#39;type&#39;)" onkeydown="filterACKey(event,&#39;type&#39;)" onfocus="filterAC(&#39;type&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;type&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
+          <button type="button" id="clear-type" onmousedown="event.preventDefault();clearFilterField(&#39;type&#39;)" title="נקה" style="display:none;position:absolute;left:22px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
+          <button type="button" onmousedown="event.preventDefault();toggleFilterAC(&#39;type&#39;)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
         </div>
-        <div id="filter-user-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
+        <div id="filter-type-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
       </div>
       <div style="position:relative">
         <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">ארגון</div>
@@ -154,15 +163,6 @@ button,input,select,textarea{font-family:inherit}
           <input id="filter-workorder" oninput="applyFilters();updateClearBtn(&#39;workorder&#39;)" placeholder="חפש..." style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 28px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
           <button type="button" id="clear-workorder" onmousedown="event.preventDefault();clearFilterField(&#39;workorder&#39;)" title="נקה" style="display:none;position:absolute;left:6px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
         </div>
-      </div>
-      <div style="position:relative">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">סוג ממשק</div>
-        <div style="position:relative;display:flex;align-items:center">
-          <input id="filter-type-input" placeholder="כולם..." autocomplete="off" oninput="filterAC(&#39;type&#39;,this.value);updateClearBtn(&#39;type&#39;)" onkeydown="filterACKey(event,&#39;type&#39;)" onfocus="filterAC(&#39;type&#39;,this.value)" onblur="setTimeout(()=&gt;closeFilterAC(&#39;type&#39;),200)" style="background:#F0F4F0;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:6px 46px 6px 10px;color:#333;font-size:13px;font-weight:500;width:100%">
-          <button type="button" id="clear-type" onmousedown="event.preventDefault();clearFilterField(&#39;type&#39;)" title="נקה" style="display:none;position:absolute;left:22px;background:transparent;border:none;color:#EF4444;cursor:pointer;font-size:13px;padding:2px;line-height:1">✕</button>
-          <button type="button" onmousedown="event.preventDefault();toggleFilterAC(&#39;type&#39;)" style="position:absolute;left:4px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:2px">▼</button>
-        </div>
-        <div id="filter-type-dd" style="display:none;position:absolute;top:100%;right:0;left:0;z-index:1000;background:var(--card2);border:1px solid var(--green);border-radius:var(--radius-sm);max-height:160px;overflow-y:auto;box-shadow:var(--shadow-md)"></div>
       </div>
     </div>
     <div style="margin-top:10px;display:flex;gap:8px">

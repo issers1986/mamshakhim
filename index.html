@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_214.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_215.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -118,6 +118,7 @@ button,input,select,textarea{font-family:inherit}
   <div style="padding:12px 24px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
     <div id="advanced-filter-bar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:1"></div>
     <button id="filter-btn" style="background:var(--card);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 16px;font-size:12px;cursor:pointer;white-space:nowrap;font-weight:600">🔍 סינון</button>
+    <button id="clear-all-filters-btn" onclick="clearFilters()" style="display:none;background:#EF444420;color:#EF4444;border:1px solid #EF444440;border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;cursor:pointer;font-weight:600">✕ נקה סינון</button>
   </div>
   <div id="filter-panel" style="display:none;margin:8px 24px 0;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);padding:16px">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:12px">
@@ -791,6 +792,8 @@ function updateFilterBadge() {
   var visible = getVisible();
   var count = filterStage === "all" ? visible.length : visible.filter(function(p){return p.stage===filterStage;}).length;
   btn.textContent = hasFilters ? '🔍 סינון ('+count+')': '🔍 סינון';
+  var clearAllBtn = document.getElementById('clear-all-filters-btn');
+  if (clearAllBtn) clearAllBtn.style.display = hasFilters ? 'inline-block' : 'none';
   btn.style.borderColor = hasFilters ? '#3B82F6' : '#2A3050';
   btn.style.color = hasFilters ? '#3B82F6' : '#A5B4FC';
 }

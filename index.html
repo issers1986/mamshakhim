@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_206.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_208.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1453,7 +1453,9 @@ async function forceSetStage(id, newStage) {
   const stageName = STAGES.find(s=>s.id===newStage)?.label;
   if(!confirm(`לשנות שלב ל: ${stageName}?`)) return;
   if(newStage === 'done') {
-    alert("⚠️ " + STAGE_DONE_MSG);
+    const proj = projects.find(p=>p.id===id);
+    const wo = proj?.workorder ? ' | הזמנה: ' + proj.workorder : '';
+    alert("⚠️ " + STAGE_DONE_MSG + wo);
   }
   const prevStage = projects.find(p=>p.id===id)?.stage;
   projects = projects.map(p=>p.id===id?{...p,stage:newStage}:p);

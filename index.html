@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_203.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_204.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1589,13 +1589,17 @@ function showCodeInput() {
   if (!pwDiv) return;
   var existing = document.getElementById('code-div');
   if (existing) existing.remove();
+  // Hide password field while code is active
+  pwDiv.style.display = 'none';
+  var loginBtn = document.getElementById('login-btn');
+  if (loginBtn) loginBtn.style.display = 'none';
   pwDiv.insertAdjacentHTML('afterend',
     '<div id="code-div" style="margin-bottom:14px">' +
     '<div style="font-size:12px;color:#7DA88A;text-align:center;margin-bottom:8px">קוד נשלח למייל שלך. הכנס אותו כאן:</div>' +
     '<input id="code-input" type="text" maxlength="6" placeholder="קוד 6 ספרות..." style="width:100%;padding:12px 16px;border-radius:8px;border:1px solid #00A65140;background:#F0F4F0;color:#333;font-size:18px;outline:none;text-align:center;letter-spacing:8px" onkeydown="if(event.key===\'Enter\')verifyCode()">' +
     '<div style="display:flex;gap:8px;margin-top:8px">' +
     '<button onclick="verifyCode()" style="flex:1;padding:10px;border-radius:8px;border:none;background:#00A651;color:#fff;font-size:13px;font-weight:700;cursor:pointer">אמת קוד</button>' +
-    '<button onclick="document.getElementById(\'code-div\').remove()" style="padding:10px 14px;border-radius:8px;border:1px solid #ccc;background:transparent;color:#666;font-size:13px;cursor:pointer">ביטול</button>' +
+    '<button onclick="document.getElementById(\'code-div\').remove();document.getElementById(\'password-div\').style.display=\'\';var b=document.getElementById(\'login-btn\');if(b)b.style.display=\'\';" style="padding:10px 14px;border-radius:8px;border:1px solid #ccc;background:transparent;color:#666;font-size:13px;cursor:pointer">ביטול</button>' +
     '</div>' +
     '<div id="code-error" style="color:#EF4444;font-size:12px;margin-top:6px;text-align:center;display:none"></div>' +
     '</div>');
@@ -1634,6 +1638,10 @@ async function saveNewPassword() {
   if (!res.ok) { if(errEl){errEl.textContent='שגיאה בשמירה';errEl.style.display='block';} return; }
   passwords[selectedUserId] = newPw;
   document.getElementById('code-div').remove();
+  var pwDiv = document.getElementById('password-div');
+  if (pwDiv) pwDiv.style.display = '';
+  var loginBtn = document.getElementById('login-btn');
+  if (loginBtn) loginBtn.style.display = '';
   alert('הסיסמה עודכנה בהצלחה! כעת ניתן להתחבר.');
 }
 

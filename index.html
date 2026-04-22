@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_215.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_224.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -118,9 +118,9 @@ button,input,select,textarea{font-family:inherit}
   <div style="padding:12px 24px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
     <div id="advanced-filter-bar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex:1"></div>
     <button id="filter-btn" style="background:var(--card);color:var(--text2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:7px 16px;font-size:12px;cursor:pointer;white-space:nowrap;font-weight:600">🔍 סינון</button>
-    <button id="clear-all-filters-btn" onclick="clearFilters()" style="display:none;background:#EF444420;color:#EF4444;border:1px solid #EF444440;border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;cursor:pointer;font-weight:600">✕ נקה סינון</button>
+
   </div>
-  <div id="filter-panel" style="display:none;margin:8px 24px 0;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);padding:16px">
+  <div id="filter-panel" style="margin:8px 24px 0;background:var(--card);border:1px solid var(--border2);border-radius:var(--radius-md);padding:16px">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:12px">
       <div style="position:relative">
         <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">משתמש</div>
@@ -515,12 +515,10 @@ async function loadProjects() {
     if (userRow) userRow.parentElement.style.display = 'none';
   }
   // Always open filter panel
-  setTimeout(function(){ 
-    var panel = document.getElementById('filter-panel');
-    var btn = document.getElementById('filter-btn');
-    if (panel) panel.style.display = 'block';
-    if (btn) { btn.style.background = 'var(--bg3)'; btn.style.color = 'var(--green)'; }
-  }, 0);
+  var panel = document.getElementById('filter-panel');
+  var btn = document.getElementById('filter-btn');
+  if (panel) panel.style.display = 'block';
+  if (btn) { btn.style.background = 'var(--bg3)'; btn.style.color = 'var(--green)'; }
 }
 
 function buildApp() {
@@ -661,58 +659,35 @@ function updateClearBtn(type) {
   if (btn) btn.style.display = val ? 'block' : 'none';
 }
 
-document.addEventListener('click', function(e) {
-  var panel = document.getElementById('filter-panel');
-  var btn = document.getElementById('filter-btn');
-  if (!panel || panel.style.display === 'none') return;
-  if (!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-    panel.style.display = 'none';
-    btn.style.background = 'var(--card)';
-    btn.style.color = 'var(--text2)';
-    ['stage','user','org','type'].forEach(function(t){
-      var dd = document.getElementById('filter-'+t+'-dd');
-      if (dd) dd.style.display = 'none';
-    });
-  }
-});
+
 
 function toggleFilterPanel() {
   var panel = document.getElementById('filter-panel');
   var btn = document.getElementById('filter-btn');
-  if (true || panel.style.display === 'none') {
-    // Populate AC items
-    _filterAC.stage.items = [''].concat(STAGES.map(function(s){ return s.label; }));
-    _filterAC.user.items = currentUser && currentUser.role==='admin'
-      ? [].concat([{id:'',name:'הכל'}], USERS.map(u=>({id:u.id,name:u.name})))
-      : [{id:'',name:'הכל'}];
-    var orgs = ["הודיס","יוחננוף","רמי לוי","סופר ספיר","סער טכנולוגיות","שוק העיר","שוק הרצל"].sort(function(a,b){return a.localeCompare(b,'he');});
-    _filterAC.org.items = [''].concat(orgs);
-    var types = ["ממשק אתר","קופה זרה","ממשק מסופון","ממשק BI","ממשק WMS","ממשק Wolt"];
-    _filterAC.type.items = [''].concat(types);
-    // Restore current values
-    var uName = filterUser ? (USERS.find(u=>u.id===filterUser)||{name:''}).name : '';
-    document.getElementById('filter-stage-input').value = filterStageAdv ? (STAGES.find(function(s){return s.id===filterStageAdv;})||{label:''}).label : '';
-    document.getElementById('filter-user-input').value = uName;
-    document.getElementById('filter-org-input').value = filterOrg;
-    document.getElementById('filter-type-input').value = filterType;
-    document.getElementById('filter-workorder').value = filterWorkorder;
-    if (currentUser && currentUser.role !== 'admin') {
-      document.getElementById('filter-user-input').parentElement.style.display = 'none';
-    }
-    panel.style.display = 'block';
-    btn.style.background = 'var(--bg3)';
-    btn.style.color = 'var(--green)';
-    // Restore clear buttons visibility
-    ['stage','user','org','type','workorder'].forEach(function(t){ updateClearBtn(t); });
-  } else {
-    panel.style.display = 'none';
-    btn.style.background = 'var(--card)';
-    btn.style.color = 'var(--text2)';
-    ['stage','user','org','type'].forEach(function(t){
-      var dd = document.getElementById('filter-'+t+'-dd');
-      if (dd) dd.style.display = 'none';
-    });
+  // Populate AC items
+  _filterAC.stage.items = [''].concat(STAGES.map(function(s){ return s.label; }));
+  _filterAC.user.items = currentUser && currentUser.role==='admin'
+    ? [].concat([{id:'',name:'הכל'}], USERS.map(u=>({id:u.id,name:u.name})))
+    : [{id:'',name:'הכל'}];
+  var orgs = ["הודיס","יוחננוף","רמי לוי","סופר ספיר","סער טכנולוגיות","שוק העיר","שוק הרצל"].sort(function(a,b){return a.localeCompare(b,'he');});
+  _filterAC.org.items = [''].concat(orgs);
+  var types = ["ממשק אתר","קופה זרה","ממשק מסופון","ממשק BI","ממשק WMS","ממשק Wolt"];
+  _filterAC.type.items = [''].concat(types);
+  // Restore current values
+  var uName = filterUser ? (USERS.find(u=>u.id===filterUser)||{name:''}).name : '';
+  document.getElementById('filter-stage-input').value = filterStageAdv ? (STAGES.find(function(s){return s.id===filterStageAdv;})||{label:''}).label : '';
+  document.getElementById('filter-user-input').value = uName;
+  document.getElementById('filter-org-input').value = filterOrg;
+  document.getElementById('filter-type-input').value = filterType;
+  document.getElementById('filter-workorder').value = filterWorkorder;
+  if (currentUser && currentUser.role !== 'admin') {
+    document.getElementById('filter-user-input').parentElement.style.display = 'none';
   }
+  panel.style.display = 'block';
+  btn.style.background = 'var(--bg3)';
+  btn.style.color = 'var(--green)';
+  // Restore clear buttons visibility
+  ['stage','user','org','type','workorder'].forEach(function(t){ updateClearBtn(t); });
 }
 
 function toggleFilterAC(type) {
@@ -783,6 +758,11 @@ function clearFilters() {
   document.getElementById('filter-org-input').value = '';
   document.getElementById('filter-workorder').value = '';
   document.getElementById('filter-type-input').value = '';
+  // Hide all clear buttons inside the panel
+  ['stage','user','org','type','workorder'].forEach(function(t){
+    var cb = document.getElementById('clear-'+t);
+    if (cb) cb.style.display = 'none';
+  });
   updateFilterBadge();
   renderProjects(); buildStagePills();
 }

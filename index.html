@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_245.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_246.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1836,6 +1836,28 @@ function openFormView(projId) {
 
 
 // ── PDF Generation ──────────────────────────────────────────────────────────
+function generateSignedPDF(projId) {
+  var sub = window._aipiunData && window._aipiunData[projId];
+  if (!sub) { showToast('⚠️ אין נתוני איפיון', '#F59E0B'); return; }
+  var proj = projects.find(function(p){ return p.id === projId; });
+  var orgName   = (proj && proj.org) || sub.org_name || '';
+  var projType  = (proj && proj.type) || '';
+  var workorder = (proj && proj.workorder) || '';
+  var fullTitle = (projType ? projType + ' — ' : '') + orgName + (workorder ? ' | הזמנה ' + workorder : '');
+  var signedDate = sub.signed_at ? new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(sub.signed_at)) : '';
+  var labelMap = {org_name:'שם ארגון',company_name:'שם חברה',has_active:'ממשק פעיל',contact1_name:'איש קשר 1',contact1_phone:'נייד 1',contact1_email:'מייל 1',contact1_role:'תפקיד 1',contact2_name:'איש קשר 2',contact2_phone:'נייד 2',contact2_email:'מייל 2',dev_name:'מתכנת',dev_company:'חברת פיתוח',dev_email:'מייל מתכנת',dev_phone:'נייד מתכנת',dev_site:'אתר',agreement_signed:'הסכם חתום',work_order:'הזמנת עבודה',slika:'סליקה בקומקס',weighted_items:'פריטים שקילים',deposit:'ניהול פיקדון',doc_type:'מסמך חשבונאי',order_close:'סגירת הזמנה',branch_doc:'סניף רישום מסמך',branch_stock:'סניף ירידת מלאי',night_plan:'תוכנית לילה',customer_type:'סוג לקוח',rewards:'תגמולים',price_list:'מחירון',notes:'דגשים'};
+  var sections = [{title:'🏢 פרטי חברה',keys:['org_name','company_name','has_active']},{title:'👤 איש קשר 1',keys:['contact1_name','contact1_phone','contact1_email','contact1_role']},{title:'👤 איש קשר 2',keys:['contact2_name','contact2_phone','contact2_email']},{title:'💻 מתכנת',keys:['dev_name','dev_company','dev_email','dev_phone','dev_site']},{title:'📄 הסכמים',keys:['agreement_signed','work_order']},{title:'⚙️ הגדרות',keys:['slika','weighted_items','deposit','doc_type','order_close','branch_doc','branch_stock','night_plan','customer_type','rewards','price_list']},{title:'📝 דגשים',keys:['notes']}];
+  var rowsHtml = '';
+  sections.forEach(function(sec){var hasData=sec.keys.some(function(k){return sub[k];});if(!hasData)return;rowsHtml+='<tr><td colspan="2" style="background:#e6f8ed;color:#005c2e;font-weight:700;font-size:12px;padding:7px 12px;border-top:2px solid #00a651">'+sec.title+'</td></tr>';sec.keys.forEach(function(k){if(!sub[k])return;rowsHtml+='<tr><td style="padding:6px 12px;color:#4a7a5a;font-size:12px;width:40%;border-bottom:1px solid #d0ead8;white-space:nowrap">'+(labelMap[k]||k)+'</td><td style="padding:6px 12px;color:#1a3d28;font-size:12px;font-weight:600;border-bottom:1px solid #d0ead8">'+sub[k]+'</td></tr>';});});
+  var sigHtml = '';
+  if (sub.signature) { sigHtml='<div style="margin-top:24px;border:1.5px solid #00a651;border-radius:10px;padding:16px;background:#f8fcf9"><div style="font-size:12px;color:#005c2e;font-weight:700;margin-bottom:10px">✍️ חתימת לקוח'+(signedDate?' — <span style="font-weight:400;color:#4a7a5a">'+signedDate+'</span>':'')+'</div>'+(sub.signer_name?'<div style="font-size:12px;color:#333;margin-bottom:8px">שם: <strong>'+sub.signer_name+'</strong>'+(sub.signer_role?' | תפקיד: <strong>'+sub.signer_role+'</strong>':'')+'</div>':'')+'<div style="background:#fff;border-radius:6px;padding:8px;display:inline-block;border:1px solid #d0ead8"><img src="'+sub.signature+'" style="max-width:260px;max-height:100px;display:block"></div><div style="margin-top:10px;font-size:11px;color:#555;border-top:1px solid #d0ead8;padding-top:8px">אני מאשר/ת את פרטי האיפיון המפורטים לעיל ומצהיר/ה שהם נכונים.</div></div>'; }
+  var html = '<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8"><style>body{font-family:Arial,Tahoma,sans-serif;direction:rtl;color:#1a3d28;margin:0;padding:0;background:#fff}.header{background:#00a651;color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center}.header-title{font-size:22px;font-weight:900;letter-spacing:-1px}.content{padding:0 24px 24px}.doc-title{text-align:center;font-size:16px;font-weight:700;color:#005c2e;margin:20px 0 4px}.doc-sub{text-align:center;font-size:11px;color:#777;margin-bottom:18px}table{width:100%;border-collapse:collapse;border:1px solid #d0ead8}.footer{margin-top:32px;border-top:1px solid #d0ead8;padding-top:8px;font-size:10px;color:#999;text-align:center}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body><div class="header"><div class="header-title">COMAX</div><div style="font-size:13px;font-weight:700">'+fullTitle+'</div><div style="font-size:11px;opacity:0.85">מחלקת ממשקים</div></div><div class="content"><div class="doc-title">טופס איפיון — חתום</div>'+(signedDate?'<div class="doc-sub">נחתם ב: '+signedDate+'</div>':'<div class="doc-sub"> </div>')+'<table>'+rowsHtml+'</table>'+sigHtml+'<div class="footer">COMAX — מחלקת ממשקים | הופק אוטומטית ממערכת בקרת פרויקטים</div></div><scr'+'ipt>window.onload=function(){window.print();}<\/scr'+'ipt></body></html>';
+  var win = window.open('', '_blank');
+  if (!win) { showToast('⚠️ אפשר חלונות קופצים לאתר זה', '#F59E0B'); return; }
+  win.document.write(html);
+  win.document.close();
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 // ── Aipiun (פרטי איפיון) ────────────────────────────────────────────────────
 var AIPIUN_FIELDS = [

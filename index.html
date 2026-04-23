@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_228.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_229.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>בקרת פרויקטים — מחלקת ממשקים</title>
-<script src="./index_files/jspdf.umd.min.js.download"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -1836,68 +1836,21 @@ function openFormView(projId) {
 }
 
 
-// ── PDF Generation ──────────────────────────────────────────────────────────
+// ── PDF Generation (print-to-PDF, no external libraries) ────────────────────
 function generateSignedPDF(projId) {
   var sub = window._aipiunData && window._aipiunData[projId];
   if (!sub) { showToast('⚠️ אין נתוני איפיון', '#F59E0B'); return; }
   var proj = projects.find(function(p){ return p.id === projId; });
 
-  var { jsPDF } = window.jspdf;
-  var doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-  // RTL support — we'll use LTR layout since jsPDF doesn't natively support RTL,
-  // but we'll mirror text alignment to right side
-  var pageW = 210;
-  var pageH = 297;
-  var margin = 15;
-  var contentW = pageW - margin * 2;
-  var y = margin;
-
-  // ── Header bar ──
-  doc.setFillColor(0, 166, 81); // #00A651
-  doc.rect(0, 0, pageW, 22, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('COMAX', margin, 14);
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  // Project title (LTR - reversed for display)
-  var orgName = (proj && proj.org) || (sub.org_name) || '';
+  var orgName  = (proj && proj.org)  || sub.org_name  || '';
   var projType = (proj && proj.type) || '';
-  var workorder = (proj && proj.workorder) || '';
-  var titleStr = projType + (orgName ? ' - ' + orgName : '') + (workorder ? ' | WO: ' + workorder : '');
-  doc.text(titleStr, pageW - margin, 14, {align: 'right'});
+  var workorder= (proj && proj.workorder) || '';
+  var fullTitle = (projType ? projType + ' — ' : '') + orgName + (workorder ? ' | הזמנה ' + workorder : '');
 
-  y = 30;
+  var signedDate = sub.signed_at
+    ? new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(sub.signed_at))
+    : '';
 
-  // ── Document title ──
-  doc.setTextColor(0, 100, 50);
-  doc.setFontSize(13);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Specification Form - Signed', pageW / 2, y, {align: 'center'});
-  y += 8;
-
-  // ── Signed date ──
-  if (sub.signed_at) {
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 100, 100);
-    var signedDate = new Intl.DateTimeFormat('he-IL', {timeZone:'Asia/Jerusalem', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}).format(new Date(sub.signed_at));
-    doc.text('Signed: ' + signedDate, pageW - margin, y, {align: 'right'});
-    y += 7;
-  }
-
-  // ── Sections ──
-  var sections = [
-    { title: 'Company Details', keys: ['org_name','company_name','has_active'] },
-    { title: 'Contact 1', keys: ['contact1_name','contact1_phone','contact1_email','contact1_role'] },
-    { title: 'Contact 2', keys: ['contact2_name','contact2_phone','contact2_email'] },
-    { title: 'Developer', keys: ['dev_name','dev_company','dev_email','dev_phone','dev_site'] },
-    { title: 'Agreements', keys: ['agreement_signed','work_order'] },
-    { title: 'Settings', keys: ['slika','weighted_items','deposit','doc_type','order_close','branch_doc','branch_stock','night_plan','customer_type','rewards','price_list'] },
-    { title: 'Notes', keys: ['notes'] }
-  ];
   var labelMap = {
     org_name:'שם ארגון', company_name:'שם חברה', has_active:'ממשק פעיל',
     contact1_name:'איש קשר 1', contact1_phone:'נייד 1', contact1_email:'מייל 1', contact1_role:'תפקיד 1',
@@ -1910,104 +1863,81 @@ function generateSignedPDF(projId) {
     rewards:'תגמולים', price_list:'מחירון', notes:'דגשים'
   };
 
-  var rowH = 7;
-  var colLabel = margin;
-  var colVal = margin + contentW * 0.45;
+  var sections = [
+    {title:'🏢 פרטי חברה',  keys:['org_name','company_name','has_active']},
+    {title:'👤 איש קשר 1',  keys:['contact1_name','contact1_phone','contact1_email','contact1_role']},
+    {title:'👤 איש קשר 2',  keys:['contact2_name','contact2_phone','contact2_email']},
+    {title:'💻 מתכנת',      keys:['dev_name','dev_company','dev_email','dev_phone','dev_site']},
+    {title:'📄 הסכמים',     keys:['agreement_signed','work_order']},
+    {title:'⚙️ הגדרות',    keys:['slika','weighted_items','deposit','doc_type','order_close','branch_doc','branch_stock','night_plan','customer_type','rewards','price_list']},
+    {title:'📝 דגשים',      keys:['notes']}
+  ];
 
+  var rowsHtml = '';
   sections.forEach(function(sec) {
     var hasData = sec.keys.some(function(k){ return sub[k]; });
     if (!hasData) return;
-
-    // Check page break
-    if (y > pageH - 40) { doc.addPage(); y = margin; }
-
-    // Section header
-    doc.setFillColor(0, 166, 81, 0.15);
-    doc.setFillColor(230, 248, 237);
-    doc.rect(margin, y - 4, contentW, 7, 'F');
-    doc.setTextColor(0, 100, 50);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.text(sec.title, margin + 2, y + 1);
-    y += 8;
-
+    rowsHtml += '<tr><td colspan="2" style="background:#e6f8ed;color:#005c2e;font-weight:700;font-size:12px;padding:7px 12px;border-top:2px solid #00a651">' + sec.title + '</td></tr>';
     sec.keys.forEach(function(k) {
       if (!sub[k]) return;
-      if (y > pageH - 20) { doc.addPage(); y = margin; }
-
-      // Alternate row bg
-      doc.setFillColor(248, 252, 249);
-      doc.rect(margin, y - 4, contentW, rowH, 'F');
-      doc.setDrawColor(220, 240, 225);
-      doc.rect(margin, y - 4, contentW, rowH, 'S');
-
-      doc.setTextColor(100, 120, 110);
-      doc.setFontSize(8);
-      doc.setFont('helvetica', 'normal');
-      doc.text(labelMap[k] || k, colLabel + 2, y);
-
-      doc.setTextColor(30, 50, 40);
-      doc.setFontSize(8.5);
-      doc.setFont('helvetica', 'bold');
-      var valText = String(sub[k]);
-      // Wrap long text
-      var wrapped = doc.splitTextToSize(valText, contentW * 0.53);
-      doc.text(wrapped, colVal, y, {align: 'left'});
-      y += rowH * wrapped.length;
+      rowsHtml += '<tr><td style="padding:6px 12px;color:#4a7a5a;font-size:12px;width:40%;border-bottom:1px solid #d0ead8;white-space:nowrap">' + (labelMap[k]||k) + '</td>' +
+                  '<td style="padding:6px 12px;color:#1a3d28;font-size:12px;font-weight:600;border-bottom:1px solid #d0ead8">' + sub[k] + '</td></tr>';
     });
-    y += 4;
   });
 
-  // ── Signature section ──
+  var sigHtml = '';
   if (sub.signature) {
-    if (y > pageH - 60) { doc.addPage(); y = margin; }
-
-    doc.setFillColor(230, 248, 237);
-    doc.rect(margin, y - 4, contentW, 7, 'F');
-    doc.setTextColor(0, 100, 50);
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Customer Signature / חתימת לקוח', margin + 2, y + 1);
-    y += 10;
-
-    // Draw signature image
-    try {
-      doc.addImage(sub.signature, 'PNG', margin, y, 70, 28);
-      y += 32;
-    } catch(e) {
-      try {
-        doc.addImage(sub.signature, 'JPEG', margin, y, 70, 28);
-        y += 32;
-      } catch(e2) {}
-    }
-
-    // Confirmation text
-    doc.setFontSize(8);
-    doc.setTextColor(80, 80, 80);
-    doc.setFont('helvetica', 'normal');
-    doc.text('I confirm that the above specification details are correct.', margin, y);
-    y += 5;
-    doc.text('אני מאשר/ת את פרטי האיפיון המפורטים לעיל ומצהיר/ה שהם נכונים.', margin, y);
-    y += 10;
+    sigHtml = '<div style="margin-top:24px;border:1.5px solid #00a651;border-radius:10px;padding:16px;background:#f8fcf9">' +
+      '<div style="font-size:12px;color:#005c2e;font-weight:700;margin-bottom:10px">✍️ חתימת לקוח' + (signedDate ? ' — <span style="font-weight:400;color:#4a7a5a">' + signedDate + '</span>' : '') + '</div>' +
+      '<div style="background:#fff;border-radius:6px;padding:8px;display:inline-block;border:1px solid #d0ead8">' +
+      '<img src="' + sub.signature + '" style="max-width:260px;max-height:100px;display:block">' +
+      '</div>' +
+      '<div style="margin-top:10px;font-size:11px;color:#555;border-top:1px solid #d0ead8;padding-top:8px">אני מאשר/ת את פרטי האיפיון המפורטים לעיל ומצהיר/ה שהם נכונים.</div>' +
+      '</div>';
   }
 
-  // ── Footer ──
-  var totalPages = doc.internal.getNumberOfPages();
-  for (var i = 1; i <= totalPages; i++) {
-    doc.setPage(i);
-    doc.setFillColor(240, 248, 242);
-    doc.rect(0, pageH - 10, pageW, 10, 'F');
-    doc.setTextColor(120, 150, 130);
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'normal');
-    doc.text('COMAX — מחלקת ממשקים', margin, pageH - 4);
-    doc.text('עמוד ' + i + ' מתוך ' + totalPages, pageW - margin, pageH - 4, {align: 'right'});
-  }
+  var html = '<!DOCTYPE html><html dir="rtl" lang="he"><head><meta charset="UTF-8">' +
+    '<style>' +
+    'body{font-family:Arial,Tahoma,sans-serif;direction:rtl;color:#1a3d28;margin:0;padding:0;background:#fff}' +
+    '.header{background:#00a651;color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center}' +
+    '.header-title{font-size:22px;font-weight:900;letter-spacing:-1px}' +
+    '.header-sub{font-size:11px;opacity:0.85;text-align:left}' +
+    '.doc-title{text-align:center;font-size:16px;font-weight:700;color:#005c2e;margin:20px 0 4px}' +
+    '.doc-sub{text-align:center;font-size:11px;color:#777;margin-bottom:18px}' +
+    '.content{padding:0 24px 24px}' +
+    'table{width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;border:1px solid #d0ead8}' +
+    '.footer{margin-top:32px;border-top:1px solid #d0ead8;padding-top:8px;font-size:10px;color:#999;text-align:center}' +
+    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+    '.no-print{display:none!important}' +
+    'button{display:none!important}}' +
+    '</style></head><body>' +
+    '<div class="header">' +
+    '<div class="header-title">COMAX</div>' +
+    '<div style="font-size:13px;font-weight:700">' + fullTitle + '</div>' +
+    '<div class="header-sub">מחלקת ממשקים</div>' +
+    '</div>' +
+    '<div class="content">' +
+    '<div class="doc-title">טופס איפיון — חתום</div>' +
+    (signedDate ? '<div class="doc-sub">נחתם ב: ' + signedDate + '</div>' : '<div class="doc-sub"> </div>') +
+    '<table>' + rowsHtml + '</table>' +
+    sigHtml +
+    '<div class="footer">COMAX — מחלקת ממשקים | הופק אוטומטית ממערכת בקרת פרויקטים</div>' +
+    '</div>' +
+    '<script>' +
+    'window.onload=function(){window.print();setTimeout(function(){window.close();},800);}' +
+    '<\/script>' +
+    '</body></html>';
 
-  // Save
-  var filename = 'aipiun_' + (orgName || projId) + (workorder ? '_' + workorder : '') + '.pdf';
-  doc.save(filename);
-  showToast('✅ PDF נוצר בהצלחה', '#10B981');
+  var blob = new Blob([html], {type: 'text/html;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
 }
 // ────────────────────────────────────────────────────────────────────────────
 

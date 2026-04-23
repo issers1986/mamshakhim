@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_248.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_249.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1944,6 +1944,7 @@ function renderAipiunView(projId, sub) {
     html += '<div style="grid-column:1/-1;background:var(--bg3);border:1.5px solid var(--border2);border-radius:10px;padding:14px 16px;margin-top:4px">' +
       '<div style="font-size:11px;color:#10B981;margin-bottom:10px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap">✍️ חתימת לקוח' +
       (sub.signed_at ? '<span style="background:#10B98120;color:#10B981;border:1px solid #10B98140;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700">📅 ' + new Intl.DateTimeFormat("he-IL",{timeZone:"Asia/Jerusalem",day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).format(new Date(sub.signed_at)) + '</span>' : '') +
+      (sub.signer_name ? '<span style="background:var(--bg);color:var(--text2);border:1px solid var(--border2);border-radius:6px;padding:2px 10px;font-size:11px">👤 ' + sub.signer_name + (sub.signer_role ? ' | ' + sub.signer_role : '') + '</span>' : '') +
       '<button onclick="generateSignedPDF(' + projId + ')" style="margin-right:auto;background:#00A651;color:#fff;border:none;border-radius:6px;padding:4px 14px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">📄 הורד PDF</button>' +
       '</div>' +
       '<div style="background:#fff;border-radius:8px;padding:10px;display:inline-block;box-shadow:0 2px 12px #00000020">' +

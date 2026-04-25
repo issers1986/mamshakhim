@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_250.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_251.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1079,6 +1079,10 @@ function switchNoteTab(projId, stageId) {
 
   const content = document.getElementById(`notecontent-${projId}`);
   if(content) content.innerHTML = buildNotesBlock(proj, stageId, canEdit);
+
+  // Show/hide checklist based on selected tab
+  const clEl = document.getElementById('checklist-' + projId);
+  if (clEl) clEl.style.display = stageId === 'approved' ? 'block' : 'none';
 }
 
 function buildNotesBlock(proj, stageId, canEdit) {

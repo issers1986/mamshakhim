@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_251.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_252.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -854,7 +854,6 @@ function buildChecklist(type, checked, projId) {
   return '<div style="margin-bottom:14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px">' +
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
     '<div style="font-size:11px;font-weight:700;color:var(--text2)">✅ צ\'ק ליסט</div>' +
-    '<div style="font-size:11px;color:var(--text3)">' + done + '/' + items.length + '</div>' +
     '</div>' +
     '<div style="height:4px;background:var(--border2);border-radius:4px;margin-bottom:10px">' +
     '<div style="height:100%;width:' + pct + '%;background:#10B981;border-radius:4px;transition:width 0.3s"></div>' +
@@ -865,7 +864,7 @@ function buildChecklist(type, checked, projId) {
         '<div style="width:18px;height:18px;border-radius:5px;border:2px solid ' + (isChecked ? '#10B981' : 'var(--border2)') + ';background:' + (isChecked ? '#10B981' : 'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s">' +
         (isChecked ? '<span style="color:#fff;font-size:11px;font-weight:900">✓</span>' : '') +
         '</div>' +
-        '<span style="font-size:12px;color:' + (isChecked ? 'var(--text3)' : 'var(--text)') + ';text-decoration:' + (isChecked ? 'line-through' : 'none') + ';transition:all 0.15s">' + item.label + '</span>' +
+        '<span style="font-size:12px;color:' + (isChecked ? 'var(--text3)' : 'var(--text)') + ';transition:all 0.15s">' + item.label + '</span>' +
         '</div>';
     }).join('') +
     '</div>';

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_252.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_253.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -296,7 +296,7 @@ const USERS = [
 
 const STAGES = [
   {id:"open",       label:"פתוח",          icon:"📂",color:"#3B82F6"},
-  {id:"approved",   label:"בתהליך",        icon:"🔄",color:"#8B5CF6"},
+  {id:"approved",   label:"בתהליך (צד קומקס)",        icon:"🔄",color:"#8B5CF6"},
   {id:"inprogress", label:"ממתין ללקוח",   icon:"⏳",color:"#10B981"},
   {id:"waiting",    label:"ממתין לצד ג׳",  icon:"🕐",color:"#F59E0B"},
   {id:"done",       label:"בוצע",          icon:"✅",color:"#06B6D4"},
@@ -833,12 +833,32 @@ async function toggleChecklistItem(projId, itemId) {
   const proj = projects.find(p => p.id === projId);
   if (!proj) return;
   const current = proj.checklist || {};
-  const updated = { ...current, [itemId]: !current[itemId] };
+
+  // If dev_task and not yet checked — show order number input first
+  if (itemId === 'dev_task' && !current[itemId]) {
+    const orderNum = prompt('מספר הזמנה לפיתוח (חובה):');
+    if (!orderNum || !orderNum.trim() || isNaN(orderNum.trim())) {
+      alert('יש להזין מספר הזמנה נומרי');
+      return;
+    }
+    const updated = { ...current, [itemId]: { checked: true, date: new Date().toISOString(), order: orderNum.trim() } };
+    projects = projects.map(p => p.id === projId ? { ...p, checklist: updated } : p);
+    const el = document.getElementById('checklist-' + projId);
+    if (el) el.innerHTML = buildChecklist(proj.type, updated, projId);
+    await fetch(SUPABASE_URL + '/rest/v1/projects?id=eq.' + projId, {
+      method: 'PATCH',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ checklist: updated })
+    });
+    return;
+  }
+
+  // Toggle: if checked — uncheck, if unchecked — check with date
+  const wasChecked = current[itemId] && (current[itemId] === true || current[itemId].checked);
+  const updated = { ...current, [itemId]: wasChecked ? false : { checked: true, date: new Date().toISOString() } };
   projects = projects.map(p => p.id === projId ? { ...p, checklist: updated } : p);
-  // Re-render checklist only
   const el = document.getElementById('checklist-' + projId);
   if (el) el.innerHTML = buildChecklist(proj.type, updated, projId);
-  // Save to Supabase
   await fetch(SUPABASE_URL + '/rest/v1/projects?id=eq.' + projId, {
     method: 'PATCH',
     headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -849,22 +869,25 @@ async function toggleChecklistItem(projId, itemId) {
 function buildChecklist(type, checked, projId) {
   const items = CHECKLISTS[type];
   if (!items || !items.length) return '';
-  const done = items.filter(i => checked && checked[i.id]).length;
-  const pct = Math.round((done / items.length) * 100);
+  const pct = Math.round((items.filter(i => { const v = checked && checked[i.id]; return v && (v === true || v.checked); }).length / items.length) * 100);
   return '<div style="margin-bottom:14px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px">' +
-    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
-    '<div style="font-size:11px;font-weight:700;color:var(--text2)">✅ צ\'ק ליסט</div>' +
-    '</div>' +
+    '<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:10px">✅ צ\'ק ליסט</div>' +
     '<div style="height:4px;background:var(--border2);border-radius:4px;margin-bottom:10px">' +
     '<div style="height:100%;width:' + pct + '%;background:#10B981;border-radius:4px;transition:width 0.3s"></div>' +
     '</div>' +
     items.map(function(item) {
-      const isChecked = checked && checked[item.id];
+      const val = checked && checked[item.id];
+      const isChecked = val && (val === true || val.checked);
+      const dateStr = val && val.date ? new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(val.date)) : '';
+      const orderStr = val && val.order ? ' | הזמנה: ' + val.order : '';
       return '<div onclick="toggleChecklistItem(' + projId + ',\'' + item.id + '\')" style="display:flex;align-items:center;gap:10px;padding:7px 6px;border-radius:6px;cursor:pointer;transition:background 0.15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'transparent\'">' +
         '<div style="width:18px;height:18px;border-radius:5px;border:2px solid ' + (isChecked ? '#10B981' : 'var(--border2)') + ';background:' + (isChecked ? '#10B981' : 'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s">' +
         (isChecked ? '<span style="color:#fff;font-size:11px;font-weight:900">✓</span>' : '') +
         '</div>' +
-        '<span style="font-size:12px;color:' + (isChecked ? 'var(--text3)' : 'var(--text)') + ';transition:all 0.15s">' + item.label + '</span>' +
+        '<div style="flex:1">' +
+        '<span style="font-size:12px;color:var(--text)">' + item.label + '</span>' +
+        (isChecked && (dateStr || orderStr) ? '<div style="font-size:10px;color:var(--text3);margin-top:2px">📅 ' + dateStr + orderStr + '</div>' : '') +
+        '</div>' +
         '</div>';
     }).join('') +
     '</div>';

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_271.html -->
+<!-- saved from url=(0046)file:///C:/Users/amit/Downloads/index_274.html -->
 <html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -849,8 +849,11 @@ async function saveTaskOrder(projId, order) {
   if (!proj) return;
   const current = proj.checklist || {};
   if (!current.dev_task || !current.dev_task.checked) return;
-  const updated = { ...current, dev_task: { ...current.dev_task, order: order } };
+  if (!order || !order.trim()) return;
+  const updated = { ...current, dev_task: { ...current.dev_task, order: order.trim() } };
   projects = projects.map(p => p.id === projId ? { ...p, checklist: updated } : p);
+  const el = document.getElementById('checklist-' + projId);
+  if (el) el.innerHTML = buildChecklist(proj.type, updated, projId);
   await fetch(SUPABASE_URL + '/rest/v1/projects?id=eq.' + projId, {
     method: 'PATCH',
     headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -901,7 +904,9 @@ function buildChecklist(type, checked, projId) {
       const dateStr = val && val.date ? new Intl.DateTimeFormat('he-IL',{timeZone:'Asia/Jerusalem',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(val.date)) : '';
       const orderStr = val && val.order ? ' | משימה: ' + val.order : '';
       // dev_task: show editable input when checked, nothing when unchecked
-      const taskInput = item.id === 'dev_task' && isChecked ? '<div style="margin-top:5px" onclick="event.stopPropagation()"><input id="task-order-' + projId + '" type="text" placeholder="מספר משימה..." value="' + (val && val.order ? val.order : '') + '" oninput="this.value=this.value.replace(/[^0-9]/g,\x27\x27);saveTaskOrder(' + projId + ',this.value)" style="width:150px;padding:5px 9px;border:1px solid var(--border2);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;outline:none;display:block"></div>' : '';
+      // Show input only when checked AND no order saved yet
+      const needsOrder = item.id === 'dev_task' && isChecked && !(val && val.order);
+      const taskInput = needsOrder ? '<div style="display:flex;align-items:center;gap:6px;margin-top:6px" onclick="event.stopPropagation()"><input id="task-order-' + projId + '" type="text" placeholder="מספר משימה..." oninput="this.value=this.value.replace(/[^0-9]/g,\x27\x27)" style="width:130px;padding:5px 9px;border:1px solid var(--border2);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;outline:none"><button onclick="saveTaskOrder(' + projId + ',document.getElementById(\'task-order-'+projId+'\').value)" style="background:var(--green);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer">✓ אישור</button></div>' : '';
       const checkClick = 'toggleChecklistItem(' + projId + ',\'' + item.id + '\')';
       return '<div style="display:flex;align-items:flex-start;gap:10px;padding:7px 6px;border-radius:6px;cursor:pointer;transition:background 0.15s" onmouseover="this.style.background=\'var(--bg)\'" onmouseout="this.style.background=\'transparent\'" onclick="' + checkClick + '">' +
         '<div style="width:18px;height:18px;border-radius:5px;margin-top:2px;border:2px solid ' + (isChecked ? '#10B981' : 'var(--border2)') + ';background:' + (isChecked ? '#10B981' : 'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s">' +
